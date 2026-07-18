@@ -12,7 +12,7 @@ export function ImageUploadField({
 }: {
   value: string;
   onChange: (url: string) => void;
-  folder: "projects" | "posts";
+  folder: "projects" | "posts" | "profile";
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);

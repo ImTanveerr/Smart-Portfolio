@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, FolderGit2, Newspaper } from "lucide-react";
+import { FolderGit2, Newspaper } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { getProfile } from "@/lib/profile";
 import { ProjectCard } from "@/components/site/project-card";
 import { PostCard } from "@/components/site/post-card";
 import { EmptyState } from "@/components/site/empty-state";
-import { Button } from "@/components/ui/button";
+import { ProfileHero } from "@/components/site/profile-hero";
 
 // Otherwise Next.js prerenders this page statically at build time (no params/
 // searchParams to signal dynamic rendering), so newly published content
@@ -12,7 +13,7 @@ import { Button } from "@/components/ui/button";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [featuredProjects, latestPosts] = await Promise.all([
+  const [featuredProjects, latestPosts, profile] = await Promise.all([
     prisma.project.findMany({
       where: { featured: true },
       orderBy: { order: "asc" },
@@ -25,34 +26,12 @@ export default async function HomePage() {
       take: 3,
       include: { tags: true },
     }),
+    getProfile(),
   ]);
 
   return (
     <div className="space-y-20">
-      <section className="max-w-2xl space-y-5 py-4">
-        <p className="text-sm font-medium text-muted-foreground">
-          Hi, I&apos;m a software engineer 👋
-        </p>
-        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-          I build things and write about how they work.
-        </h1>
-        <p className="text-lg text-muted-foreground">
-          Take a look at what I&apos;ve shipped, or read what I&apos;ve learned along the way.
-        </p>
-        <div className="flex flex-wrap gap-3 pt-2">
-          <Button nativeButton={false} render={<Link href="/projects" />}>
-            View projects
-            <ArrowRight />
-          </Button>
-          <Button
-            variant="outline"
-            nativeButton={false}
-            render={<Link href="/blog" />}
-          >
-            Read the blog
-          </Button>
-        </div>
-      </section>
+      <ProfileHero profile={profile} />
 
       <section className="space-y-6">
         <div className="flex items-center justify-between">

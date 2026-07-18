@@ -31,3 +31,18 @@ export const postSchema = z.object({
 });
 
 export type PostFormValues = z.infer<typeof postSchema>;
+
+export const profileSchema = z.object({
+  name: z.string().max(100).optional().or(z.literal("")),
+  title: z.string().max(150).optional().or(z.literal("")),
+  description: z.string().max(1000).optional().or(z.literal("")),
+  email: z.string().email("Must be a valid email").optional().or(z.literal("")),
+  phone: z.string().max(30).optional().or(z.literal("")),
+  avatarImage: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  githubUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  linkedinUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  twitterUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  websiteUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+});
+
+export type ProfileFormValues = z.infer<typeof profileSchema>;

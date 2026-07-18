@@ -85,9 +85,31 @@ model Tag {
   posts    Post[]    @relation("PostTags")
   projects Project[] @relation("ProjectTech")
 }
+
+model Profile {
+  id          String   @id @default("profile")
+  name        String?
+  title       String?
+  description String?
+  email       String?
+  phone       String?
+  avatarImage String?
+  githubUrl   String?
+  linkedinUrl String?
+  twitterUrl  String?
+  websiteUrl  String?
+  updatedAt   DateTime @updatedAt
+}
 ```
 
 `Tag` is shared between posts (topics) and projects (tech stack) to keep the model simple.
+
+`Profile` is a **singleton** — always looked up/upserted by the fixed id `"profile"`
+(`src/lib/profile.ts` exports `PROFILE_ID` and a `getProfile()` helper both the admin page and
+public home page use). It backs the admin Profile section (`/admin/profile`) and the home page
+hero: avatar, name, title, description, email, phone, and social links (GitHub/LinkedIn/X/website).
+Every field is optional — the hero falls back to generic placeholder copy until it's filled in, so
+nothing looks broken before the admin sets it.
 
 ---
 
@@ -108,7 +130,11 @@ model Tag {
 - `/admin/posts/new`, `/admin/posts/[id]/edit`
 - `/admin/projects` — table of all projects
 - `/admin/projects/new`, `/admin/projects/[id]/edit`
-- `/admin/tags` — simple list/create/delete for tags
+- `/admin/profile` — single edit form for the home page hero profile (singleton, no list/new/delete)
+
+Note: a standalone `/admin/tags` page was never built — tags/tech-stack turned out fine as a
+plain comma-separated input on the post/project forms (upserted server-side), so a dedicated
+management screen wasn't needed.
 
 ---
 

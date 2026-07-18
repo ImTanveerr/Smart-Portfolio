@@ -26,6 +26,9 @@ export default async function AdminDashboardLayout({
           <Link href="/admin/posts" className="text-sm">
             Blog posts
           </Link>
+          <Link href="/admin/profile" className="text-sm">
+            Profile
+          </Link>
         </nav>
         <div className="flex items-center gap-4 text-sm">
           <span className="text-muted-foreground">{session.user?.email}</span>
