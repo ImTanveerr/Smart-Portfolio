@@ -1,0 +1,20 @@
+"use client";
+
+import dynamic from "next/dynamic";
+import "@uiw/react-md-editor/markdown-editor.css";
+
+const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
+
+export function MarkdownEditor({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div data-color-mode="light">
+      <MDEditor value={value} onChange={(v) => onChange(v ?? "")} height={320} />
+    </div>
+  );
+}
