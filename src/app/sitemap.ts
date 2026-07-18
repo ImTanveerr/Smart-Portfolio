@@ -2,6 +2,10 @@ import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { siteUrl } from "@/lib/site";
 
+// Otherwise this is prerendered statically at build time and new
+// projects/posts wouldn't appear until the next deploy.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [projects, posts] = await Promise.all([
     prisma.project.findMany({ select: { slug: true, updatedAt: true } }),

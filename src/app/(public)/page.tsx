@@ -3,6 +3,11 @@ import { prisma } from "@/lib/prisma";
 import { ProjectCard } from "@/components/site/project-card";
 import { PostCard } from "@/components/site/post-card";
 
+// Otherwise Next.js prerenders this page statically at build time (no params/
+// searchParams to signal dynamic rendering), so newly published content
+// wouldn't show up here until the next deploy.
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const [featuredProjects, latestPosts] = await Promise.all([
     prisma.project.findMany({
