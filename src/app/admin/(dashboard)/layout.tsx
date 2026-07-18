@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { SignOutButton } from "./sign-out-button";
 
 export default async function AdminDashboardLayout({
@@ -14,7 +15,7 @@ export default async function AdminDashboardLayout({
 
   return (
     <div className="min-h-screen">
-      <header className="flex items-center justify-between border-b border-black/10 px-6 py-4 dark:border-white/10">
+      <header className="flex items-center justify-between border-b border-border px-6 py-4">
         <nav className="flex items-center gap-6">
           <Link href="/admin" className="font-semibold">
             Admin
@@ -27,9 +28,8 @@ export default async function AdminDashboardLayout({
           </Link>
         </nav>
         <div className="flex items-center gap-4 text-sm">
-          <span className="text-black/60 dark:text-white/60">
-            {session.user?.email}
-          </span>
+          <span className="text-muted-foreground">{session.user?.email}</span>
+          <ThemeToggle />
           <SignOutButton />
         </div>
       </header>

@@ -2,6 +2,16 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { deleteProject } from "@/lib/actions/projects";
 import { DeleteButton } from "@/components/admin/delete-button";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default async function AdminProjectsPage() {
   const projects = await prisma.project.findMany({
@@ -13,53 +23,54 @@ export default async function AdminProjectsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Projects</h1>
-        <Link
-          href="/admin/projects/new"
-          className="rounded bg-black px-4 py-2 text-sm text-white dark:bg-white dark:text-black"
-        >
-          New project
-        </Link>
+        <Button render={<Link href="/admin/projects/new" />}>New project</Button>
       </div>
 
       {projects.length === 0 ? (
-        <p className="text-black/60 dark:text-white/60">No projects yet.</p>
+        <p className="text-muted-foreground">No projects yet.</p>
       ) : (
-        <table className="w-full border-collapse text-left text-sm">
-          <thead>
-            <tr className="border-b border-black/10 dark:border-white/10">
-              <th className="py-2 pr-4">Title</th>
-              <th className="py-2 pr-4">Tech</th>
-              <th className="py-2 pr-4">Featured</th>
-              <th className="py-2 pr-4">Updated</th>
-              <th className="py-2 pr-4"></th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Title</TableHead>
+              <TableHead>Tech</TableHead>
+              <TableHead>Featured</TableHead>
+              <TableHead>Updated</TableHead>
+              <TableHead></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {projects.map((project) => (
-              <tr key={project.id} className="border-b border-black/5 dark:border-white/5">
-                <td className="py-2 pr-4 font-medium">{project.title}</td>
-                <td className="py-2 pr-4 text-black/60 dark:text-white/60">
+              <TableRow key={project.id}>
+                <TableCell className="font-medium">{project.title}</TableCell>
+                <TableCell className="text-muted-foreground">
                   {project.techStack.map((tag) => tag.name).join(", ") || "—"}
-                </td>
-                <td className="py-2 pr-4">{project.featured ? "Yes" : "No"}</td>
-                <td className="py-2 pr-4 text-black/60 dark:text-white/60">
+                </TableCell>
+                <TableCell>
+                  {project.featured ? <Badge>Featured</Badge> : "—"}
+                </TableCell>
+                <TableCell className="text-muted-foreground">
                   {project.updatedAt.toLocaleDateString()}
-                </td>
-                <td className="py-2 pr-4">
-                  <div className="flex items-center gap-3">
-                    <Link
-                      href={`/admin/projects/${project.id}/edit`}
-                      className="text-sm underline underline-offset-2"
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      render={<Link href={`/admin/projects/${project.id}/edit`} />}
                     >
                       Edit
-                    </Link>
-                    <DeleteButton onDelete={deleteProject.bind(null, project.id)} />
+                    </Button>
+                    <DeleteButton
+                      onDelete={deleteProject.bind(null, project.id)}
+                      itemLabel="project"
+                    />
                   </div>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       )}
     </div>
   );

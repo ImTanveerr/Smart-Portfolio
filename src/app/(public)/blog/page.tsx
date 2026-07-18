@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { PostCard } from "@/components/site/post-card";
+
+export const metadata: Metadata = {
+  title: "Blog",
+  description: "Writing on software engineering topics.",
+};
 
 export default async function BlogPage({
   searchParams,
@@ -21,12 +27,12 @@ export default async function BlogPage({
     <div className="space-y-8">
       <h1 className="text-2xl font-semibold">Blog</h1>
       {tag && (
-        <p className="text-sm text-black/60 dark:text-white/60">
+        <p className="text-sm text-muted-foreground">
           Filtered by tag: <span className="font-medium">{tag}</span>
         </p>
       )}
       {posts.length === 0 ? (
-        <p className="text-black/60 dark:text-white/60">No posts published yet.</p>
+        <p className="text-muted-foreground">No posts published yet.</p>
       ) : (
         <div className="space-y-8">
           {posts.map((post) => (

@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { ProjectCard } from "@/components/site/project-card";
+
+export const metadata: Metadata = {
+  title: "Projects",
+  description: "Software projects I've built.",
+};
 
 export default async function ProjectsPage({
   searchParams,
@@ -18,12 +24,12 @@ export default async function ProjectsPage({
     <div className="space-y-8">
       <h1 className="text-2xl font-semibold">Projects</h1>
       {tag && (
-        <p className="text-sm text-black/60 dark:text-white/60">
+        <p className="text-sm text-muted-foreground">
           Filtered by tag: <span className="font-medium">{tag}</span>
         </p>
       )}
       {projects.length === 0 ? (
-        <p className="text-black/60 dark:text-white/60">No projects to show.</p>
+        <p className="text-muted-foreground">No projects to show.</p>
       ) : (
         <div className="space-y-8">
           {projects.map((project) => (

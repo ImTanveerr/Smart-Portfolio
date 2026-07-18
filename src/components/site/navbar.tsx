@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const links = [
   { href: "/projects", label: "Projects" },
@@ -8,7 +9,7 @@ const links = [
 
 export function Navbar() {
   return (
-    <header className="border-b border-black/10 dark:border-white/10">
+    <header className="border-b border-border">
       <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
         <Link href="/" className="font-semibold">
           Portfolio
@@ -19,6 +20,7 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
+          <ThemeToggle />
         </nav>
       </div>
     </header>

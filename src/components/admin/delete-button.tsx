@@ -3,20 +3,32 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { ActionResult } from "@/lib/actions/types";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export function DeleteButton({
   onDelete,
-  confirmMessage = "Delete this item? This cannot be undone.",
+  itemLabel = "item",
 }: {
   onDelete: () => Promise<ActionResult>;
-  confirmMessage?: string;
+  itemLabel?: string;
 }) {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  function handleClick() {
-    if (!confirm(confirmMessage)) return;
+  function handleConfirm() {
     setError(null);
     startTransition(async () => {
       const result = await onDelete();
@@ -24,21 +36,39 @@ export function DeleteButton({
         setError(result.error);
         return;
       }
+      setOpen(false);
       router.refresh();
     });
   }
 
   return (
-    <span>
-      <button
-        type="button"
-        onClick={handleClick}
-        disabled={isPending}
-        className="text-sm text-red-600 underline underline-offset-2 disabled:opacity-50"
-      >
-        {isPending ? "Deleting..." : "Delete"}
-      </button>
-      {error && <span className="ml-2 text-sm text-red-600">{error}</span>}
-    </span>
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger
+        render={
+          <Button variant="ghost" size="sm" className="text-destructive">
+            Delete
+          </Button>
+        }
+      />
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete this {itemLabel}?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This cannot be undone.
+            {error && <span className="mt-2 block text-destructive">{error}</span>}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            variant="destructive"
+            disabled={isPending}
+            onClick={handleConfirm}
+          >
+            {isPending ? "Deleting..." : "Delete"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

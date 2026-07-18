@@ -2,6 +2,16 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { deletePost } from "@/lib/actions/posts";
 import { DeleteButton } from "@/components/admin/delete-button";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default async function AdminPostsPage() {
   const posts = await prisma.post.findMany({
@@ -13,63 +23,56 @@ export default async function AdminPostsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Blog posts</h1>
-        <Link
-          href="/admin/posts/new"
-          className="rounded bg-black px-4 py-2 text-sm text-white dark:bg-white dark:text-black"
-        >
-          New post
-        </Link>
+        <Button render={<Link href="/admin/posts/new" />}>New post</Button>
       </div>
 
       {posts.length === 0 ? (
-        <p className="text-black/60 dark:text-white/60">No posts yet.</p>
+        <p className="text-muted-foreground">No posts yet.</p>
       ) : (
-        <table className="w-full border-collapse text-left text-sm">
-          <thead>
-            <tr className="border-b border-black/10 dark:border-white/10">
-              <th className="py-2 pr-4">Title</th>
-              <th className="py-2 pr-4">Tags</th>
-              <th className="py-2 pr-4">Status</th>
-              <th className="py-2 pr-4">Updated</th>
-              <th className="py-2 pr-4"></th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Title</TableHead>
+              <TableHead>Tags</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Updated</TableHead>
+              <TableHead></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {posts.map((post) => (
-              <tr key={post.id} className="border-b border-black/5 dark:border-white/5">
-                <td className="py-2 pr-4 font-medium">{post.title}</td>
-                <td className="py-2 pr-4 text-black/60 dark:text-white/60">
+              <TableRow key={post.id}>
+                <TableCell className="font-medium">{post.title}</TableCell>
+                <TableCell className="text-muted-foreground">
                   {post.tags.map((tag) => tag.name).join(", ") || "—"}
-                </td>
-                <td className="py-2 pr-4">
-                  <span
-                    className={
-                      post.published
-                        ? "rounded bg-green-100 px-2 py-0.5 text-green-800 dark:bg-green-900/40 dark:text-green-300"
-                        : "rounded bg-yellow-100 px-2 py-0.5 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300"
-                    }
-                  >
+                </TableCell>
+                <TableCell>
+                  <Badge variant={post.published ? "default" : "secondary"}>
                     {post.published ? "Published" : "Draft"}
-                  </span>
-                </td>
-                <td className="py-2 pr-4 text-black/60 dark:text-white/60">
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-muted-foreground">
                   {post.updatedAt.toLocaleDateString()}
-                </td>
-                <td className="py-2 pr-4">
-                  <div className="flex items-center gap-3">
-                    <Link
-                      href={`/admin/posts/${post.id}/edit`}
-                      className="text-sm underline underline-offset-2"
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      render={<Link href={`/admin/posts/${post.id}/edit`} />}
                     >
                       Edit
-                    </Link>
-                    <DeleteButton onDelete={deletePost.bind(null, post.id)} />
+                    </Button>
+                    <DeleteButton
+                      onDelete={deletePost.bind(null, post.id)}
+                      itemLabel="post"
+                    />
                   </div>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       )}
     </div>
   );

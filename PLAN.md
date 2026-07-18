@@ -198,10 +198,29 @@ prisma/
 
 ## 9. SEO & Polish
 
-- `generateMetadata` per page (title/description/OG tags), dynamic OG data for blog posts and projects.
-- `sitemap.ts` / `robots.ts` for crawlability.
-- Tag-based filtering on `/blog` and `/projects`.
-- Responsive layout, dark mode (shadcn theme toggle).
+- `generateMetadata` per page (title/description), dynamic OG data (title/description/image) on
+  `/projects/[slug]` and `/blog/[slug]` via `generateMetadata`. `metadataBase` set from
+  `NEXT_PUBLIC_SITE_URL` so relative OG image paths resolve to absolute URLs.
+- `sitemap.ts` (home, static pages, every project, every published post) and `robots.ts`
+  (disallows `/admin`) for crawlability. `/admin/*` also carries `robots: { index: false }` via
+  `src/app/admin/layout.tsx` as a second layer (belt-and-suspenders against accidental indexing).
+- Tag-based filtering on `/blog` and `/projects` via `?tag=slug` (built in Phase 6).
+- **shadcn/ui retrofit:** Phases 4–6 were built with plain Tailwind + native HTML elements, which
+  deviated from this plan's original choice. Phase 7 retrofitted the admin forms (Input, Label,
+  Textarea, Switch via `Controller` since it's not a native input), tables (Table, Badge), delete
+  confirmation (AlertDialog replacing `window.confirm`), buttons (Button, including its `render`
+  prop for polymorphic Link-as-Button), and the login page (Card) — plus swept the public site's
+  raw `black/10 dark:white/10`-style classes over to the shadcn design tokens (`border-border`,
+  `text-muted-foreground`, etc.) for one consistent design system.
+  - shadcn's CLI (v4.x) defaulted to **Base UI** as the primitive/headless component library
+    (its own recommended default) rather than Radix — a newer option than what older shadcn
+    docs/tutorials describe. `components.json` records `"style": "base-nova"`.
+  - `@custom-variant dark (&:is(.dark *));` in `globals.css` (written by shadcn's init) switches
+    Tailwind's `dark:` variant from OS-preference-only to class-based, which `next-themes` toggles.
+- **Dark mode:** `next-themes` (`src/components/theme-provider.tsx`, wired into the root layout
+  with `attribute="class" defaultTheme="system" enableSystem`) + a `ThemeToggle` button (sun/moon
+  icons from `lucide-react`) in both the public navbar and the admin header.
+- Responsive layout: constrained `max-w-3xl` content column, flex/grid utility classes throughout.
 
 ---
 
@@ -214,6 +233,7 @@ NEXTAUTH_SECRET=       # random secret for session signing
 NEXTAUTH_URL=          # http://localhost:3000 in dev
 ADMIN_EMAIL=           # used only by the seed script
 ADMIN_PASSWORD=        # used only by the seed script (hashed before storing)
+NEXT_PUBLIC_SITE_URL=  # base URL for sitemap/OG absolute URLs — update at deploy time (Phase 8)
 ```
 
 **Getting these from Supabase:** dashboard → "Connect" → ORM tab → Prisma. Use the **pooler** URLs, not

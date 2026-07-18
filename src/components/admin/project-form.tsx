@@ -1,13 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { projectSchema, type ProjectFormValues } from "@/lib/validations";
 import { slugify } from "@/lib/slugify";
 import { createProject, updateProject } from "@/lib/actions/projects";
 import { MarkdownEditor } from "@/components/admin/markdown-editor";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 
 export function ProjectForm({
   projectId,
@@ -25,6 +30,7 @@ export function ProjectForm({
     handleSubmit,
     watch,
     setValue,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
@@ -61,13 +67,11 @@ export function ProjectForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl space-y-5">
-      {serverError && <p className="text-sm text-red-600">{serverError}</p>}
+      {serverError && <p className="text-sm text-destructive">{serverError}</p>}
 
       <div className="space-y-1">
-        <label htmlFor="title" className="text-sm font-medium">
-          Title
-        </label>
-        <input
+        <Label htmlFor="title">Title</Label>
+        <Input
           id="title"
           {...register("title", {
             onChange: (event) => {
@@ -76,114 +80,93 @@ export function ProjectForm({
               }
             },
           })}
-          className="w-full rounded border border-black/15 bg-transparent px-3 py-2 dark:border-white/15"
         />
-        {errors.title && <p className="text-sm text-red-600">{errors.title.message}</p>}
+        {errors.title && <p className="text-sm text-destructive">{errors.title.message}</p>}
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="slug" className="text-sm font-medium">
-          Slug
-        </label>
-        <input
+        <Label htmlFor="slug">Slug</Label>
+        <Input
           id="slug"
+          className="font-mono"
           {...register("slug", {
             onChange: () => setSlugTouched(true),
           })}
-          className="w-full rounded border border-black/15 bg-transparent px-3 py-2 font-mono text-sm dark:border-white/15"
         />
-        {errors.slug && <p className="text-sm text-red-600">{errors.slug.message}</p>}
+        {errors.slug && <p className="text-sm text-destructive">{errors.slug.message}</p>}
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="summary" className="text-sm font-medium">
-          Summary
-        </label>
-        <textarea
-          id="summary"
-          rows={2}
-          {...register("summary")}
-          className="w-full rounded border border-black/15 bg-transparent px-3 py-2 dark:border-white/15"
-        />
-        {errors.summary && <p className="text-sm text-red-600">{errors.summary.message}</p>}
+        <Label htmlFor="summary">Summary</Label>
+        <Textarea id="summary" rows={2} {...register("summary")} />
+        {errors.summary && (
+          <p className="text-sm text-destructive">{errors.summary.message}</p>
+        )}
       </div>
 
       <div className="space-y-1">
-        <label className="text-sm font-medium">Description (Markdown)</label>
+        <Label>Description (Markdown)</Label>
         <MarkdownEditor
           value={description}
           onChange={(value) => setValue("description", value, { shouldValidate: true })}
         />
         {errors.description && (
-          <p className="text-sm text-red-600">{errors.description.message}</p>
+          <p className="text-sm text-destructive">{errors.description.message}</p>
         )}
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="coverImage" className="text-sm font-medium">
-          Cover image URL
-        </label>
-        <input
-          id="coverImage"
-          {...register("coverImage")}
-          className="w-full rounded border border-black/15 bg-transparent px-3 py-2 dark:border-white/15"
-        />
+        <Label htmlFor="coverImage">Cover image URL</Label>
+        <Input id="coverImage" {...register("coverImage")} />
         {errors.coverImage && (
-          <p className="text-sm text-red-600">{errors.coverImage.message}</p>
+          <p className="text-sm text-destructive">{errors.coverImage.message}</p>
         )}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">
-          <label htmlFor="repoUrl" className="text-sm font-medium">
-            Repo URL
-          </label>
-          <input
-            id="repoUrl"
-            {...register("repoUrl")}
-            className="w-full rounded border border-black/15 bg-transparent px-3 py-2 dark:border-white/15"
-          />
-          {errors.repoUrl && <p className="text-sm text-red-600">{errors.repoUrl.message}</p>}
+          <Label htmlFor="repoUrl">Repo URL</Label>
+          <Input id="repoUrl" {...register("repoUrl")} />
+          {errors.repoUrl && (
+            <p className="text-sm text-destructive">{errors.repoUrl.message}</p>
+          )}
         </div>
         <div className="space-y-1">
-          <label htmlFor="liveUrl" className="text-sm font-medium">
-            Live URL
-          </label>
-          <input
-            id="liveUrl"
-            {...register("liveUrl")}
-            className="w-full rounded border border-black/15 bg-transparent px-3 py-2 dark:border-white/15"
-          />
-          {errors.liveUrl && <p className="text-sm text-red-600">{errors.liveUrl.message}</p>}
+          <Label htmlFor="liveUrl">Live URL</Label>
+          <Input id="liveUrl" {...register("liveUrl")} />
+          {errors.liveUrl && (
+            <p className="text-sm text-destructive">{errors.liveUrl.message}</p>
+          )}
         </div>
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="techStack" className="text-sm font-medium">
-          Tech stack (comma-separated)
-        </label>
-        <input
+        <Label htmlFor="techStack">Tech stack (comma-separated)</Label>
+        <Input
           id="techStack"
           placeholder="Next.js, TypeScript, Prisma"
           {...register("techStack")}
-          className="w-full rounded border border-black/15 bg-transparent px-3 py-2 dark:border-white/15"
         />
       </div>
 
       <div className="flex items-center gap-2">
-        <input id="featured" type="checkbox" {...register("featured")} />
-        <label htmlFor="featured" className="text-sm font-medium">
-          Featured on home page
-        </label>
+        <Controller
+          control={control}
+          name="featured"
+          render={({ field }) => (
+            <Switch
+              id="featured"
+              checked={field.value}
+              onCheckedChange={field.onChange}
+            />
+          )}
+        />
+        <Label htmlFor="featured">Featured on home page</Label>
       </div>
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="rounded bg-black px-4 py-2 text-white disabled:opacity-50 dark:bg-white dark:text-black"
-      >
+      <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Saving..." : projectId ? "Save changes" : "Create project"}
-      </button>
+      </Button>
     </form>
   );
 }

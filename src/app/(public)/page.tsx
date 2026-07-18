@@ -23,7 +23,7 @@ export default async function HomePage() {
     <div className="space-y-16">
       <section className="space-y-4">
         <h1 className="text-3xl font-semibold">Hi, I&apos;m a software engineer.</h1>
-        <p className="max-w-xl text-black/70 dark:text-white/70">
+        <p className="max-w-xl text-muted-foreground">
           I build things and write about it here. Take a look at my{" "}
           <Link href="/projects" className="underline underline-offset-2">
             projects
@@ -44,7 +44,7 @@ export default async function HomePage() {
           </Link>
         </div>
         {featuredProjects.length === 0 ? (
-          <p className="text-black/60 dark:text-white/60">
+          <p className="text-muted-foreground">
             No featured projects yet — check back soon.
           </p>
         ) : (
@@ -64,7 +64,7 @@ export default async function HomePage() {
           </Link>
         </div>
         {latestPosts.length === 0 ? (
-          <p className="text-black/60 dark:text-white/60">No posts published yet.</p>
+          <p className="text-muted-foreground">No posts published yet.</p>
         ) : (
           <div className="space-y-8">
             {latestPosts.map((post) => (

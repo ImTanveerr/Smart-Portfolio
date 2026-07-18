@@ -1,7 +1,28 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { MarkdownContent } from "@/components/site/markdown-content";
 import { TagPills } from "@/components/site/tag-pills";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const project = await prisma.project.findUnique({ where: { slug } });
+  if (!project) return {};
+
+  return {
+    title: project.title,
+    description: project.summary,
+    openGraph: {
+      title: project.title,
+      description: project.summary,
+      images: project.coverImage ? [project.coverImage] : undefined,
+    },
+  };
+}
 
 export default async function ProjectDetailPage({
   params,
@@ -24,13 +45,13 @@ export default async function ProjectDetailPage({
         <img
           src={project.coverImage}
           alt={project.title}
-          className="w-full rounded-lg border border-black/10 object-cover dark:border-white/10"
+          className="w-full rounded-lg border border-border object-cover"
         />
       )}
 
       <div className="space-y-2">
         <h1 className="text-3xl font-semibold">{project.title}</h1>
-        <p className="text-black/70 dark:text-white/70">{project.summary}</p>
+        <p className="text-muted-foreground">{project.summary}</p>
       </div>
 
       <TagPills tags={project.techStack} basePath="/projects" />

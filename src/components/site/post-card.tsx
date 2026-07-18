@@ -11,9 +11,9 @@ type PostCardData = {
 
 export function PostCard({ post }: { post: PostCardData }) {
   return (
-    <article className="space-y-2 border-b border-black/10 pb-8 dark:border-white/10">
+    <article className="space-y-2 border-b border-border pb-8">
       {post.publishedAt && (
-        <time className="text-sm text-black/50 dark:text-white/50">
+        <time className="text-sm text-muted-foreground">
           {post.publishedAt.toLocaleDateString(undefined, {
             year: "numeric",
             month: "long",
@@ -24,7 +24,7 @@ export function PostCard({ post }: { post: PostCardData }) {
       <h2 className="text-xl font-semibold">
         <Link href={`/blog/${post.slug}`}>{post.title}</Link>
       </h2>
-      {post.excerpt && <p className="text-black/70 dark:text-white/70">{post.excerpt}</p>}
+      {post.excerpt && <p className="text-muted-foreground">{post.excerpt}</p>}
       <TagPills tags={post.tags} basePath="/blog" />
     </article>
   );

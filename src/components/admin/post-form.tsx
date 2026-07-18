@@ -1,13 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { postSchema, type PostFormValues } from "@/lib/validations";
 import { slugify } from "@/lib/slugify";
 import { createPost, updatePost } from "@/lib/actions/posts";
 import { MarkdownEditor } from "@/components/admin/markdown-editor";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 
 export function PostForm({
   postId,
@@ -25,6 +30,7 @@ export function PostForm({
     handleSubmit,
     watch,
     setValue,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<PostFormValues>({
     resolver: zodResolver(postSchema),
@@ -57,13 +63,11 @@ export function PostForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl space-y-5">
-      {serverError && <p className="text-sm text-red-600">{serverError}</p>}
+      {serverError && <p className="text-sm text-destructive">{serverError}</p>}
 
       <div className="space-y-1">
-        <label htmlFor="title" className="text-sm font-medium">
-          Title
-        </label>
-        <input
+        <Label htmlFor="title">Title</Label>
+        <Input
           id="title"
           {...register("title", {
             onChange: (event) => {
@@ -72,87 +76,72 @@ export function PostForm({
               }
             },
           })}
-          className="w-full rounded border border-black/15 bg-transparent px-3 py-2 dark:border-white/15"
         />
-        {errors.title && <p className="text-sm text-red-600">{errors.title.message}</p>}
+        {errors.title && <p className="text-sm text-destructive">{errors.title.message}</p>}
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="slug" className="text-sm font-medium">
-          Slug
-        </label>
-        <input
+        <Label htmlFor="slug">Slug</Label>
+        <Input
           id="slug"
+          className="font-mono"
           {...register("slug", {
             onChange: () => setSlugTouched(true),
           })}
-          className="w-full rounded border border-black/15 bg-transparent px-3 py-2 font-mono text-sm dark:border-white/15"
         />
-        {errors.slug && <p className="text-sm text-red-600">{errors.slug.message}</p>}
+        {errors.slug && <p className="text-sm text-destructive">{errors.slug.message}</p>}
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="excerpt" className="text-sm font-medium">
-          Excerpt
-        </label>
-        <textarea
-          id="excerpt"
-          rows={2}
-          {...register("excerpt")}
-          className="w-full rounded border border-black/15 bg-transparent px-3 py-2 dark:border-white/15"
-        />
-        {errors.excerpt && <p className="text-sm text-red-600">{errors.excerpt.message}</p>}
-      </div>
-
-      <div className="space-y-1">
-        <label className="text-sm font-medium">Content (Markdown)</label>
-        <MarkdownEditor
-          value={content}
-          onChange={(value) => setValue("content", value, { shouldValidate: true })}
-        />
-        {errors.content && <p className="text-sm text-red-600">{errors.content.message}</p>}
-      </div>
-
-      <div className="space-y-1">
-        <label htmlFor="coverImage" className="text-sm font-medium">
-          Cover image URL
-        </label>
-        <input
-          id="coverImage"
-          {...register("coverImage")}
-          className="w-full rounded border border-black/15 bg-transparent px-3 py-2 dark:border-white/15"
-        />
-        {errors.coverImage && (
-          <p className="text-sm text-red-600">{errors.coverImage.message}</p>
+        <Label htmlFor="excerpt">Excerpt</Label>
+        <Textarea id="excerpt" rows={2} {...register("excerpt")} />
+        {errors.excerpt && (
+          <p className="text-sm text-destructive">{errors.excerpt.message}</p>
         )}
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="tags" className="text-sm font-medium">
-          Tags (comma-separated)
-        </label>
-        <input
-          id="tags"
-          placeholder="TypeScript, Web Performance"
-          {...register("tags")}
-          className="w-full rounded border border-black/15 bg-transparent px-3 py-2 dark:border-white/15"
+        <Label>Content (Markdown)</Label>
+        <MarkdownEditor
+          value={content}
+          onChange={(value) => setValue("content", value, { shouldValidate: true })}
         />
+        {errors.content && (
+          <p className="text-sm text-destructive">{errors.content.message}</p>
+        )}
+      </div>
+
+      <div className="space-y-1">
+        <Label htmlFor="coverImage">Cover image URL</Label>
+        <Input id="coverImage" {...register("coverImage")} />
+        {errors.coverImage && (
+          <p className="text-sm text-destructive">{errors.coverImage.message}</p>
+        )}
+      </div>
+
+      <div className="space-y-1">
+        <Label htmlFor="tags">Tags (comma-separated)</Label>
+        <Input id="tags" placeholder="TypeScript, Web Performance" {...register("tags")} />
       </div>
 
       <div className="flex items-center gap-2">
-        <input id="published" type="checkbox" {...register("published")} />
-        <label htmlFor="published" className="text-sm font-medium">
-          Published
-        </label>
+        <Controller
+          control={control}
+          name="published"
+          render={({ field }) => (
+            <Switch
+              id="published"
+              checked={field.value}
+              onCheckedChange={field.onChange}
+            />
+          )}
+        />
+        <Label htmlFor="published">Published</Label>
       </div>
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="rounded bg-black px-4 py-2 text-white disabled:opacity-50 dark:bg-white dark:text-black"
-      >
+      <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Saving..." : postId ? "Save changes" : "Create post"}
-      </button>
+      </Button>
     </form>
   );
 }
