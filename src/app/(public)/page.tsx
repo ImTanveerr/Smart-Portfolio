@@ -40,11 +40,15 @@ export default async function HomePage() {
           Take a look at what I&apos;ve shipped, or read what I&apos;ve learned along the way.
         </p>
         <div className="flex flex-wrap gap-3 pt-2">
-          <Button render={<Link href="/projects" />}>
+          <Button nativeButton={false} render={<Link href="/projects" />}>
             View projects
             <ArrowRight />
           </Button>
-          <Button variant="outline" render={<Link href="/blog" />}>
+          <Button
+            variant="outline"
+            nativeButton={false}
+            render={<Link href="/blog" />}
+          >
             Read the blog
           </Button>
         </div>

@@ -23,7 +23,9 @@ export default async function AdminPostsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Blog posts</h1>
-        <Button render={<Link href="/admin/posts/new" />}>New post</Button>
+        <Button nativeButton={false} render={<Link href="/admin/posts/new" />}>
+          New post
+        </Button>
       </div>
 
       {posts.length === 0 ? (
@@ -59,6 +61,7 @@ export default async function AdminPostsPage() {
                     <Button
                       variant="ghost"
                       size="sm"
+                      nativeButton={false}
                       render={<Link href={`/admin/posts/${post.id}/edit`} />}
                     >
                       Edit

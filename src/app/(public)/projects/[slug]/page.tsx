@@ -70,13 +70,20 @@ export default async function ProjectDetailPage({
       {(project.repoUrl || project.liveUrl) && (
         <div className="flex flex-wrap gap-3">
           {project.repoUrl && (
-            <Button variant="outline" render={<a href={project.repoUrl} />}>
+            <Button
+              variant="outline"
+              nativeButton={false}
+              render={<a href={project.repoUrl} target="_blank" rel="noopener noreferrer" />}
+            >
               <Code />
               Source code
             </Button>
           )}
           {project.liveUrl && (
-            <Button render={<a href={project.liveUrl} />}>
+            <Button
+              nativeButton={false}
+              render={<a href={project.liveUrl} target="_blank" rel="noopener noreferrer" />}
+            >
               <ExternalLink />
               Live site
             </Button>

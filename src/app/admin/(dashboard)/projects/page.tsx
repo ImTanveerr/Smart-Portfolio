@@ -23,7 +23,9 @@ export default async function AdminProjectsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Projects</h1>
-        <Button render={<Link href="/admin/projects/new" />}>New project</Button>
+        <Button nativeButton={false} render={<Link href="/admin/projects/new" />}>
+          New project
+        </Button>
       </div>
 
       {projects.length === 0 ? (
@@ -57,6 +59,7 @@ export default async function AdminProjectsPage() {
                     <Button
                       variant="ghost"
                       size="sm"
+                      nativeButton={false}
                       render={<Link href={`/admin/projects/${project.id}/edit`} />}
                     >
                       Edit
