@@ -53,7 +53,7 @@ model Post {
   title       String
   slug        String    @unique
   excerpt     String?
-  content     String    @db.Text        // Markdown
+  content     String    // Markdown (Postgres String already maps to `text`, no @db.Text needed)
   coverImage  String?
   published   Boolean   @default(false)
   publishedAt DateTime?
@@ -67,7 +67,7 @@ model Project {
   title       String
   slug        String    @unique
   summary     String
-  description String    @db.Text        // Markdown
+  description String    // Markdown
   coverImage  String?
   repoUrl     String?
   liveUrl     String?
@@ -204,15 +204,27 @@ proxy.ts                          # Next.js 16 name for what used to be middlewa
 ## 10. Environment Variables
 
 ```
-DATABASE_URL=          # Supabase pooled connection string
-DIRECT_URL=            # Supabase direct connection string (for migrations)
+DATABASE_URL=          # Supabase transaction-mode pooler (port 6543) — app runtime, via driver adapter
+DIRECT_URL=            # Supabase session-mode pooler (port 5432) — Prisma CLI migrations only
 NEXTAUTH_SECRET=       # random secret for session signing
 NEXTAUTH_URL=          # http://localhost:3000 in dev
 ADMIN_EMAIL=           # used only by the seed script
 ADMIN_PASSWORD=        # used only by the seed script (hashed before storing)
 ```
 
-You'll need to create a free Supabase project to get `DATABASE_URL`/`DIRECT_URL` before the DB step runs.
+**Getting these from Supabase:** dashboard → "Connect" → ORM tab → Prisma. Use the **pooler** URLs, not
+the direct connection — Supabase's direct connection is IPv6-only and unreachable from many networks/ISPs.
+
+**Prisma 7 note:** the version installed (7.8.0) is a newer major version with real API changes vs. older
+Prisma docs/tutorials:
+- The new default client generator (`provider = "prisma-client"`) outputs real `.ts` source to
+  `src/generated/prisma` (gitignored, regenerated via `prisma generate`) instead of a binary in `node_modules`.
+- Connection URLs are no longer declared in `schema.prisma`. `prisma.config.ts` holds the URL the **CLI**
+  uses for migrate/generate (set to `DIRECT_URL`, the session pooler). The **app** connects independently
+  at runtime via an explicit driver adapter (`@prisma/adapter-pg` + `pg`) constructed with `DATABASE_URL`
+  (the transaction pooler) — see `src/lib/prisma.ts`.
+- `directUrl` as a `schema.prisma` datasource field was removed entirely in v7; the split above is how the
+  same two-URL Supabase setup is achieved instead.
 
 ---
 
