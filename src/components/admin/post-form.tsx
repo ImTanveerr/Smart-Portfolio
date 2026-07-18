@@ -8,6 +8,7 @@ import { postSchema, type PostFormValues } from "@/lib/validations";
 import { slugify } from "@/lib/slugify";
 import { createPost, updatePost } from "@/lib/actions/posts";
 import { MarkdownEditor } from "@/components/admin/markdown-editor";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -47,6 +48,7 @@ export function PostForm({
   });
 
   const content = watch("content");
+  const coverImage = watch("coverImage");
 
   async function onSubmit(values: PostFormValues) {
     setServerError(null);
@@ -112,8 +114,12 @@ export function PostForm({
       </div>
 
       <div className="space-y-1">
-        <Label htmlFor="coverImage">Cover image URL</Label>
-        <Input id="coverImage" {...register("coverImage")} />
+        <Label htmlFor="coverImage">Cover image</Label>
+        <ImageUploadField
+          value={coverImage ?? ""}
+          onChange={(value) => setValue("coverImage", value, { shouldValidate: true })}
+          folder="posts"
+        />
         {errors.coverImage && (
           <p className="text-sm text-destructive">{errors.coverImage.message}</p>
         )}

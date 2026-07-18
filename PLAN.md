@@ -190,8 +190,19 @@ prisma/
 
 ## 8. Images
 
-- **Phase 1 (MVP):** cover images are a plain URL field in the form (paste a hosted image link) — zero extra infra.
-- **Phase 2 (optional, later):** add real upload support via Supabase Storage if pasting URLs proves annoying.
+- Cover images can be a pasted URL, or uploaded directly — `ImageUploadField`
+  (`src/components/admin/image-upload-field.tsx`) offers both: a URL text input and an "Upload"
+  button, side by side, with a live preview.
+- File uploads go through `POST /api/upload` (`src/app/api/upload/route.ts`), which checks the
+  admin session, validates the file is an image under 4MB, and uploads it to **Cloudinary**
+  (`src/lib/cloudinary.ts`) via `upload_stream` — no local disk involved at any point.
+  - **Not `multer` + local disk:** the app is deployed on Vercel, where the filesystem is
+    read-only at runtime except `/tmp` (wiped after each request, not shared across instances) —
+    a traditional `multer.diskStorage` write would silently vanish in production. Next.js Route
+    Handlers also use the Web-standard `Request`/`FormData` API rather than Express's `req`/`res`,
+    so `multer` (Express-specific middleware) isn't a natural fit here regardless; `request.formData()`
+    already parses `multipart/form-data` without it.
+  - Uploads are organized into Cloudinary folders `portfolio/projects` and `portfolio/posts`.
 - Since cover image URLs can point to any external host, render them with a plain `<img>` tag rather than `next/image` (which requires each domain to be allow-listed in `images.remotePatterns` ahead of time) — avoids needing to update config every time a new image host is used.
 
 ---
@@ -234,6 +245,9 @@ NEXTAUTH_URL=          # http://localhost:3000 in dev
 ADMIN_EMAIL=           # used only by the seed script
 ADMIN_PASSWORD=        # used only by the seed script (hashed before storing)
 NEXT_PUBLIC_SITE_URL=  # base URL for sitemap/OG absolute URLs — update at deploy time (Phase 8)
+CLOUDINARY_CLOUD_NAME= # Cloudinary dashboard homepage
+CLOUDINARY_API_KEY=    # Cloudinary dashboard homepage
+CLOUDINARY_API_SECRET= # Cloudinary dashboard homepage — also needs adding on Vercel to deploy
 ```
 
 **Getting these from Supabase:** dashboard → "Connect" → ORM tab → Prisma. Use the **pooler** URLs, not

@@ -8,6 +8,7 @@ import { projectSchema, type ProjectFormValues } from "@/lib/validations";
 import { slugify } from "@/lib/slugify";
 import { createProject, updateProject } from "@/lib/actions/projects";
 import { MarkdownEditor } from "@/components/admin/markdown-editor";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -49,6 +50,7 @@ export function ProjectForm({
   });
 
   const description = watch("description");
+  const coverImage = watch("coverImage");
 
   async function onSubmit(values: ProjectFormValues) {
     setServerError(null);
@@ -116,8 +118,12 @@ export function ProjectForm({
       </div>
 
       <div className="space-y-1">
-        <Label htmlFor="coverImage">Cover image URL</Label>
-        <Input id="coverImage" {...register("coverImage")} />
+        <Label htmlFor="coverImage">Cover image</Label>
+        <ImageUploadField
+          value={coverImage ?? ""}
+          onChange={(value) => setValue("coverImage", value, { shouldValidate: true })}
+          folder="projects"
+        />
         {errors.coverImage && (
           <p className="text-sm text-destructive">{errors.coverImage.message}</p>
         )}
