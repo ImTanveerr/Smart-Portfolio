@@ -28,7 +28,7 @@ and an admin-only panel to manage both — built with Next.js (App Router) + Typ
 | Framework           | Next.js 14+ (App Router), TypeScript                | Requested; SSR/SSG for SEO, Server Actions for CRUD without hand-rolled API layer |
 | Database            | PostgreSQL, hosted on Supabase                       | Relational data (posts/projects/tags) fits SQL well; free hosted tier; pairs cleanly with Vercel |
 | ORM                 | Prisma                                               | End-to-end type safety with TypeScript, easy migrations |
-| Auth                | Auth.js (NextAuth v5), Credentials provider          | Battle-tested session/cookie handling; single admin user, hashed password |
+| Auth                | NextAuth v4 (`next-auth`), Credentials provider      | v5/Auth.js is still beta on npm as of build time; v4 is stable, mature, and fully supports the App Router |
 | Styling             | Tailwind CSS + shadcn/ui                             | Fast, accessible components for admin CRUD screens (tables, forms, dialogs) and public site |
 | Content editor      | `@uiw/react-md-editor` (Markdown + live preview)     | Content stored as Markdown text; simple, great for code snippets in blog posts |
 | Content rendering    | `react-markdown` + `remark-gfm` + syntax highlighting | Render stored Markdown on the public site |
@@ -115,10 +115,10 @@ model Tag {
 ## 5. Auth Flow
 
 - Single admin account, seeded via a `prisma/seed.ts` script from `ADMIN_EMAIL` / `ADMIN_PASSWORD` env vars (password hashed with bcrypt before storing).
-- NextAuth Credentials provider checks email/password against the `User` table.
-- JWT session strategy (no DB session table needed — simpler for serverless deploys).
-- `proxy.ts` (Next.js 16 renamed `middleware.ts` → `proxy.ts`, export `proxy` instead of `middleware`) protects all `/admin/*` routes except `/admin/login`, redirecting unauthenticated requests to login.
-- Admin layout (`app/admin/layout.tsx`) renders a sidebar shell and double-checks the session server-side.
+- NextAuth Credentials provider (`src/lib/auth.ts`) checks email/password against the `User` table via Prisma + bcrypt compare.
+- JWT session strategy (no DB session table needed — simpler for serverless deploys). `session.user.id` / `token.id` typed via `src/types/next-auth.d.ts` module augmentation.
+- `src/proxy.ts` (Next.js 16 renamed `middleware.ts` → `proxy.ts`) wraps `next-auth/middleware`'s `withAuth`, matching `/admin` and `/admin/((?!login).*)` — i.e. everything under `/admin` except `/admin/login`.
+- `/admin/login` sits directly under `src/app/admin/`, while the guarded dashboard lives in a `src/app/admin/(dashboard)/` route group so its `layout.tsx` can do a server-side `getServerSession` check (defense-in-depth per Next.js 16's guidance that Proxy alone isn't enough for Server Actions) without redirect-looping against the login page itself.
 
 ---
 
@@ -137,18 +137,20 @@ src/
         page.tsx
         [slug]/page.tsx
     admin/
-      layout.tsx                 # guarded shell (sidebar/nav)
-      page.tsx                   # dashboard
-      login/page.tsx
-      posts/
-        page.tsx
-        new/page.tsx
-        [id]/edit/page.tsx
-      projects/
-        page.tsx
-        new/page.tsx
-        [id]/edit/page.tsx
-      tags/page.tsx
+      login/page.tsx              # public — outside the (dashboard) guard group
+      (dashboard)/
+        layout.tsx                 # guarded shell: getServerSession + redirect, sidebar/nav
+        sign-out-button.tsx
+        page.tsx                   # dashboard
+        posts/
+          page.tsx
+          new/page.tsx
+          [id]/edit/page.tsx
+        projects/
+          page.tsx
+          new/page.tsx
+          [id]/edit/page.tsx
+        tags/page.tsx
     api/
       auth/[...nextauth]/route.ts
     layout.tsx                   # root layout
@@ -160,7 +162,7 @@ src/
     site/                        # navbar, footer, project-card, post-card
     admin/                       # data-table, post-form, project-form, markdown-editor
   lib/
-    prisma.ts                    # Prisma client singleton
+    prisma.ts                    # Prisma client singleton (driver adapter, see section 10)
     auth.ts                      # NextAuth config
     actions/
       posts.ts                   # server actions: create/update/delete/publish
@@ -168,10 +170,12 @@ src/
       tags.ts
     validations.ts               # zod schemas (shared client/server)
     utils.ts
+  types/
+    next-auth.d.ts               # module augmentation for session.user.id / token.id
+  proxy.ts                       # Next.js 16 name for what used to be middleware.ts (lives beside src/app)
 prisma/
   schema.prisma
   seed.ts
-proxy.ts                          # Next.js 16 name for what used to be middleware.ts
 ```
 
 ---
