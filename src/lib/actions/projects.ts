@@ -1,37 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { projectSchema, type ProjectFormValues } from "@/lib/validations";
-import { slugify } from "@/lib/slugify";
-
-async function requireAdmin() {
-  const session = await getServerSession(authOptions);
-  if (!session) throw new Error("Unauthorized");
-}
-
-async function resolveTags(techStackInput: string | undefined) {
-  const names = (techStackInput ?? "")
-    .split(",")
-    .map((name) => name.trim())
-    .filter(Boolean);
-
-  const tags = await Promise.all(
-    names.map((name) =>
-      prisma.tag.upsert({
-        where: { slug: slugify(name) },
-        update: {},
-        create: { name, slug: slugify(name) },
-      })
-    )
-  );
-
-  return tags.map((tag) => ({ id: tag.id }));
-}
-
-export type ActionResult = { error: string } | { success: true };
+import { resolveTags } from "@/lib/tags";
+import { requireAdmin } from "@/lib/require-admin";
+import type { ActionResult } from "@/lib/actions/types";
 
 export async function createProject(values: ProjectFormValues): Promise<ActionResult> {
   await requireAdmin();

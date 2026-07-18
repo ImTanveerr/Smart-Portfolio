@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import type { ActionResult } from "@/lib/actions/projects";
+import type { ActionResult } from "@/lib/actions/types";
 
 export function DeleteButton({
   onDelete,

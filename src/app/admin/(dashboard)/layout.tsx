@@ -22,6 +22,9 @@ export default async function AdminDashboardLayout({
           <Link href="/admin/projects" className="text-sm">
             Projects
           </Link>
+          <Link href="/admin/posts" className="text-sm">
+            Blog posts
+          </Link>
         </nav>
         <div className="flex items-center gap-4 text-sm">
           <span className="text-black/60 dark:text-white/60">
