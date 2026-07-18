@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { MarkdownContent } from "@/components/site/markdown-content";
 import { TagPills } from "@/components/site/tag-pills";
@@ -41,17 +43,25 @@ export default async function PostDetailPage({
   if (!post || !post.published) notFound();
 
   return (
-    <article className="space-y-6">
+    <article className="mx-auto max-w-2xl space-y-8">
+      <Link
+        href="/blog"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeft className="size-4" />
+        All posts
+      </Link>
+
       {post.coverImage && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={post.coverImage}
           alt={post.title}
-          className="w-full rounded-lg border border-border object-cover"
+          className="aspect-video w-full rounded-xl border border-border object-cover"
         />
       )}
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         {post.publishedAt && (
           <time className="text-sm text-muted-foreground">
             {post.publishedAt.toLocaleDateString(undefined, {
@@ -61,7 +71,7 @@ export default async function PostDetailPage({
             })}
           </time>
         )}
-        <h1 className="text-3xl font-semibold">{post.title}</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">{post.title}</h1>
       </div>
 
       <TagPills tags={post.tags} basePath="/blog" />

@@ -21,8 +21,10 @@ export function PostCard({ post }: { post: PostCardData }) {
           })}
         </time>
       )}
-      <h2 className="text-xl font-semibold">
-        <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+      <h2 className="text-xl font-semibold tracking-tight">
+        <Link href={`/blog/${post.slug}`} className="hover:underline hover:underline-offset-2">
+          {post.title}
+        </Link>
       </h2>
       {post.excerpt && <p className="text-muted-foreground">{post.excerpt}</p>}
       <TagPills tags={post.tags} basePath="/blog" />
