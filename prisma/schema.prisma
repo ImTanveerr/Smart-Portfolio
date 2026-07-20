@@ -73,3 +73,18 @@ model Tag {
   posts    Post[]    @relation("PostTags")
   projects Project[] @relation("ProjectTech")
 }
+
+enum SkillCategory {
+  FRONTEND
+  BACKEND
+  DEVOPS
+  OTHER
+}
+
+model Skill {
+  id        String        @id @default(cuid())
+  name      String        @unique
+  category  SkillCategory
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}

@@ -9,6 +9,7 @@
     "lint": "eslint",
     "postinstall": "prisma generate",
     "db:seed": "tsx prisma/seed.ts",
+    "db:seed-skills": "tsx prisma/seed-skills.ts",
     "db:studio": "prisma studio"
   },
   "dependencies": {

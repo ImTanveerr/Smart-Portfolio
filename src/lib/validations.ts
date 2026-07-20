@@ -47,3 +47,19 @@ export const profileSchema = z.object({
 });
 
 export type ProfileFormValues = z.infer<typeof profileSchema>;
+
+export const SKILL_CATEGORIES = ["FRONTEND", "BACKEND", "DEVOPS", "OTHER"] as const;
+
+export const SKILL_CATEGORY_LABELS: Record<(typeof SKILL_CATEGORIES)[number], string> = {
+  FRONTEND: "Frontend",
+  BACKEND: "Backend",
+  DEVOPS: "DevOps",
+  OTHER: "Other",
+};
+
+export const skillSchema = z.object({
+  name: z.string().min(1, "Name is required").max(50),
+  category: z.enum(SKILL_CATEGORIES),
+});
+
+export type SkillFormValues = z.infer<typeof skillSchema>;

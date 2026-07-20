@@ -7,6 +7,7 @@ import { PostCard } from "@/components/site/post-card";
 import { EmptyState } from "@/components/site/empty-state";
 import { ProfileHero } from "@/components/site/profile-hero";
 import { MarkdownContent } from "@/components/site/markdown-content";
+import { SkillsSection } from "@/components/site/skills-section";
 
 // Otherwise Next.js prerenders this page statically at build time (no params/
 // searchParams to signal dynamic rendering), so newly published content
@@ -14,7 +15,7 @@ import { MarkdownContent } from "@/components/site/markdown-content";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [featuredProjects, latestPosts, profile] = await Promise.all([
+  const [featuredProjects, latestPosts, profile, skills] = await Promise.all([
     prisma.project.findMany({
       where: { featured: true },
       orderBy: { order: "asc" },
@@ -28,11 +29,19 @@ export default async function HomePage() {
       include: { tags: true },
     }),
     getProfile(),
+    prisma.skill.findMany({ orderBy: { name: "asc" } }),
   ]);
 
   return (
     <div className="space-y-20">
       <ProfileHero profile={profile} />
+
+      {skills.length > 0 && (
+        <section id="skills" className="scroll-mt-24 space-y-6">
+          <h2 className="text-xl font-semibold tracking-tight">Skills</h2>
+          <SkillsSection skills={skills} />
+        </section>
+      )}
 
       <section id="projects" className="scroll-mt-24 space-y-6">
         <div className="flex items-center justify-between">

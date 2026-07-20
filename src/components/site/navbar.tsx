@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const links = [
+  { href: "/#skills", label: "Skills" },
   { href: "/#projects", label: "Projects" },
   { href: "/#blog", label: "Blog" },
   { href: "/#about", label: "About" },

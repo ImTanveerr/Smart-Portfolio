@@ -101,9 +101,31 @@ model Profile {
   websiteUrl   String?
   updatedAt    DateTime @updatedAt
 }
+
+enum SkillCategory {
+  FRONTEND
+  BACKEND
+  DEVOPS
+  OTHER
+}
+
+model Skill {
+  id        String        @id @default(cuid())
+  name      String        @unique
+  category  SkillCategory
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
 ```
 
 `Tag` is shared between posts (topics) and projects (tech stack) to keep the model simple.
+
+`Skill` backs the Skills section (`/admin/skills` to manage; shown at `#skills` on the home page,
+between the hero and Featured projects). No separate new/edit pages — the admin screen is a single
+page with an inline add form (name + category) and a grouped pill list where each pill has its own
+category dropdown (updates immediately) and a remove button, since two fields don't justify a full
+CRUD suite. Seeded with the initial real skill list via `npm run db:seed-skills`
+(`prisma/seed-skills.ts`, upsert-based so it's safe to re-run).
 
 `Profile` is a **singleton** — always looked up/upserted by the fixed id `"profile"`
 (`src/lib/profile.ts` exports `PROFILE_ID` and a `getProfile()` helper the admin page and every
@@ -119,12 +141,13 @@ nothing looks broken before the admin sets it.
 
 ## 4. Routes / Pages
 
-**Public** — the navbar links to `/#projects`, `/#blog`, `/#about` (landing-page style: scroll to
-the section on the home page, navigating to `/` first if you're elsewhere) rather than to
-`/projects`, `/blog`, `/about` directly. Each home section still has a "View all" link to the
-full standalone page for `/projects` and `/blog`; `/about` itself still exists as a directly
-linkable URL (e.g. for a resume) showing the same `aboutContent`.
-- `/` — home: hero, featured projects (`#projects`), latest posts (`#blog`), about (`#about`)
+**Public** — the navbar links to `/#skills`, `/#projects`, `/#blog`, `/#about` (landing-page
+style: scroll to the section on the home page, navigating to `/` first if you're elsewhere)
+rather than to separate pages. Each home section still has a "View all" link to the full
+standalone page for `/projects` and `/blog`; `/about` itself still exists as a directly linkable
+URL (e.g. for a resume) showing the same `aboutContent`.
+- `/` — home: hero, skills (`#skills`), featured projects (`#projects`), latest posts (`#blog`),
+  about (`#about`)
 - `/projects` — grid of all projects, filterable by tag
 - `/projects/[slug]` — project detail (overview, tech stack, links, screenshots)
 - `/blog` — list of published posts, filterable by tag, paginated
@@ -139,6 +162,7 @@ linkable URL (e.g. for a resume) showing the same `aboutContent`.
 - `/admin/projects` — table of all projects
 - `/admin/projects/new`, `/admin/projects/[id]/edit`
 - `/admin/profile` — single edit form for the home page hero profile (singleton, no list/new/delete)
+- `/admin/skills` — inline add form + grouped pill list with per-item category select and remove
 
 Note: a standalone `/admin/tags` page was never built — tags/tech-stack turned out fine as a
 plain comma-separated input on the post/project forms (upserted server-side), so a dedicated
