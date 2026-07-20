@@ -4,7 +4,7 @@ import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
-import { ArrowRight, ChevronDown, User } from "lucide-react";
+import { ArrowRight, User } from "lucide-react";
 import type { Profile } from "@/generated/prisma/client";
 import { Button } from "@/components/ui/button";
 import { getSocialLinks } from "@/lib/social-links";
@@ -87,6 +87,14 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
           className="max-w-xl space-y-5 text-center md:text-left"
         >
           <div className="space-y-3">
+            <motion.span
+              variants={item}
+              className="inline-flex items-center gap-1 font-mono text-sm text-[var(--accent-a)] dark:text-[var(--accent-b)]"
+            >
+              <span className="text-muted-foreground">{"<"}</span>
+              {title}
+              <span className="text-muted-foreground">{"/>"}</span>
+            </motion.span>
             <motion.h1
               variants={nameContainer}
               className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-5xl font-semibold tracking-tight sm:text-6xl md:justify-start"
@@ -97,13 +105,6 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
                 </motion.span>
               ))}
             </motion.h1>
-            <motion.span
-              variants={item}
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-3 py-1 text-sm font-medium text-muted-foreground"
-            >
-              <span className="size-1.5 shrink-0 rounded-full bg-gradient-to-br from-[var(--accent-a)] to-[var(--accent-b)]" />
-              {title}
-            </motion.span>
           </div>
           <motion.p variants={item} className="text-lg text-muted-foreground text-pretty">
             {description}
@@ -165,9 +166,21 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
         type="button"
         onClick={scrollToNext}
         aria-label="Scroll to next section"
-        className="mx-auto mt-10 hidden size-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:text-foreground sm:flex"
+        className="group mx-auto mt-12 hidden flex-col items-center gap-2 sm:flex"
       >
-        <ChevronDown className="size-4 motion-safe:animate-bounce" />
+        <span className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground transition-colors group-hover:text-foreground">
+          SCROLL
+        </span>
+        <span className="relative h-10 w-px overflow-hidden bg-border">
+          {!shouldReduceMotion && (
+            <motion.span
+              aria-hidden
+              className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-[var(--accent-a)] to-[var(--accent-b)]"
+              animate={{ y: ["-100%", "200%"] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            />
+          )}
+        </span>
       </button>
     </section>
   );
