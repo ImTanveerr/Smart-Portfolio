@@ -116,7 +116,7 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
         >
           <motion.h1
             variants={item}
-            className="text-4xl leading-tight font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl"
+            className="text-[36px] leading-tight font-bold tracking-tight text-balance sm:text-[48px] lg:text-[60px]"
           >
             {name}
           </motion.h1>
