@@ -72,6 +72,9 @@ export function Navbar({ name, email }: { name?: string | null; email?: string |
                 )}
               >
                 {isActive && (
+                  // Same layoutId across renders = framer-motion animates
+                  // the pill sliding from the old active link to this one,
+                  // instead of it just popping into place.
                   <motion.span
                     layoutId="nav-active-pill"
                     className="absolute inset-0 rounded-full bg-muted"

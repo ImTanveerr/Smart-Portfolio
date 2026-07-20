@@ -8,9 +8,9 @@ export const projectSchema = z.object({
     .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "Use lowercase letters, numbers, and hyphens only"),
   summary: z.string().min(1, "Summary is required").max(300),
   description: z.string().min(1, "Description is required"),
-  coverImage: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-  repoUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-  liveUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  coverImage: z.url("Must be a valid URL").optional().or(z.literal("")),
+  repoUrl: z.url("Must be a valid URL").optional().or(z.literal("")),
+  liveUrl: z.url("Must be a valid URL").optional().or(z.literal("")),
   featured: z.boolean(),
   techStack: z.string().optional(),
 });
@@ -25,7 +25,7 @@ export const postSchema = z.object({
     .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "Use lowercase letters, numbers, and hyphens only"),
   excerpt: z.string().max(300).optional().or(z.literal("")),
   content: z.string().min(1, "Content is required"),
-  coverImage: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  coverImage: z.url("Must be a valid URL").optional().or(z.literal("")),
   published: z.boolean(),
   tags: z.string().optional(),
 });
@@ -37,15 +37,15 @@ export const profileSchema = z.object({
   title: z.string().max(150).optional().or(z.literal("")),
   description: z.string().max(1000).optional().or(z.literal("")),
   aboutContent: z.string().max(10000).optional().or(z.literal("")),
-  email: z.string().email("Must be a valid email").optional().or(z.literal("")),
+  email: z.email("Must be a valid email").optional().or(z.literal("")),
   phone: z.string().max(30).optional().or(z.literal("")),
-  avatarImage: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-  avatarImage2: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-  githubUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-  linkedinUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-  twitterUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-  websiteUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-  resumeUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  avatarImage: z.url("Must be a valid URL").optional().or(z.literal("")),
+  avatarImage2: z.url("Must be a valid URL").optional().or(z.literal("")),
+  githubUrl: z.url("Must be a valid URL").optional().or(z.literal("")),
+  linkedinUrl: z.url("Must be a valid URL").optional().or(z.literal("")),
+  twitterUrl: z.url("Must be a valid URL").optional().or(z.literal("")),
+  websiteUrl: z.url("Must be a valid URL").optional().or(z.literal("")),
+  resumeUrl: z.url("Must be a valid URL").optional().or(z.literal("")),
   projectsCount: z.coerce
     .number()
     .int("Must be a whole number")
@@ -58,6 +58,11 @@ export const profileSchema = z.object({
     .max(12, "Must be 12 or fewer"),
 });
 
+// z.coerce.number() (used by projectsCount/postsCount) accepts a string as
+// input but produces a number as output, so the form's "before validation"
+// and "after validation" shapes differ. ProfileForm's useForm<Input, _,
+// Values> needs both: Input for what the <input> fields hold, Values for
+// what onSubmit receives.
 export type ProfileFormValues = z.infer<typeof profileSchema>;
 export type ProfileFormInput = z.input<typeof profileSchema>;
 

@@ -30,6 +30,11 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  // NextAuth's JWT and session objects don't carry the user id by default -
+  // `user` is only available here on initial sign-in, so it's copied onto
+  // the token once, then the token (persisted in the cookie) is copied onto
+  // the session on every request. See src/types/next-auth.d.ts for the
+  // matching type augmentation.
   callbacks: {
     async jwt({ token, user }) {
       if (user) token.id = user.id;

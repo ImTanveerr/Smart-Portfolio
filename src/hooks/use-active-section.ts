@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 
+// Scroll-spy for the navbar: reports which section id is currently under a
+// horizontal band near the top of the viewport, so the nav can highlight the
+// matching link as the user scrolls the single-page home layout.
 export function useActiveSection(ids: string[]) {
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -21,6 +24,9 @@ export function useActiveSection(ids: string[]) {
           setActiveId(visible[0].target.id);
         }
       },
+      // Shrinks the observed area to a band starting 20% down from the top
+      // and ending 70% down, so a section counts as "active" once it's near
+      // the top of the screen rather than merely anywhere on screen.
       { rootMargin: "-20% 0px -70% 0px", threshold: 0 }
     );
 

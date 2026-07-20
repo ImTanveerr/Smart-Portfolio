@@ -9,6 +9,9 @@ import type { Profile } from "@/generated/prisma/client";
 import { Button } from "@/components/ui/button";
 import { getSocialLinks } from "@/lib/social-links";
 
+// Cycles through the profile's two optional photos on a timer. With 0 or 1
+// image there's nothing to cycle to, so the interval is skipped entirely
+// and this just returns the single image (or undefined) unchanged.
 function useCyclingImage(images: string[], intervalMs = 3000) {
   const [index, setIndex] = useState(0);
 
@@ -57,6 +60,9 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
   };
 
   return (
+    // Full-bleed edge to edge (see SectionBand for the same technique with
+    // explanation) and a negative top margin to cancel out <main>'s own
+    // padding, so the hero sits flush against the sticky navbar above it.
     <section className="relative -mt-12 ml-[calc(50%-50vw)] w-screen overflow-hidden md:-mt-16">
       <div
         aria-hidden
@@ -79,6 +85,13 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
               className="relative size-56 overflow-hidden rounded-full ring-1 ring-border ring-offset-4 ring-offset-background [perspective:1200px] sm:size-72 lg:size-80"
             >
               {activeImage ? (
+                // Coin-flip transition between the two photos: the outgoing
+                // image rotates away on the Y axis while the incoming one
+                // rotates in from the opposite side. `[perspective:1200px]`
+                // on the parent circle is what gives the rotation actual 3D
+                // depth instead of just squashing flat; `mode="sync"` lets
+                // both animations run at once instead of waiting for the
+                // exit to finish first.
                 <AnimatePresence mode="sync">
                   <motion.div
                     key={activeImage}

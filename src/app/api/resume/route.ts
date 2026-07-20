@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { getProfile } from "@/lib/profile";
 
+// Proxies the resume through our own domain instead of linking straight to
+// Cloudinary, so we control the Content-Disposition header ourselves
+// (?download=1 forces a download; otherwise it opens inline in the browser).
+// Cloudinary's own attachment flag isn't documented for raw file resources,
+// so this is the reliable way to support both behaviors from one upload.
 export async function GET(request: Request) {
   const profile = await getProfile();
 

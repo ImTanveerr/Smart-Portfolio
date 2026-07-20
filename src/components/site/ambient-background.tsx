@@ -1,3 +1,5 @@
+// Rendered once in the public layout, behind every page. `fixed` (not
+// `absolute`) so it stays put during scroll instead of moving with content.
 export function AmbientBackground() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">

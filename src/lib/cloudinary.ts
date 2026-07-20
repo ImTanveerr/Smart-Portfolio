@@ -10,6 +10,8 @@ export function uploadImageToCloudinary(buffer: Buffer, folder: string): Promise
   return uploadToCloudinary(buffer, folder, "image");
 }
 
+// Cloudinary requires resource_type: "raw" for non-image files (e.g. the
+// resume PDF) - uploading a PDF as "image" is rejected.
 export function uploadRawFileToCloudinary(buffer: Buffer, folder: string): Promise<string> {
   return uploadToCloudinary(buffer, folder, "raw");
 }
