@@ -35,7 +35,7 @@ export function ProjectCard({ project }: { project: ProjectCardData }) {
           <h2 className="font-semibold tracking-tight group-hover:text-[var(--accent-a)] dark:group-hover:text-[var(--accent-b)]">
             {project.title}
           </h2>
-          <p className="line-clamp-2 text-sm text-muted-foreground">{project.summary}</p>
+          <p className="line-clamp-2 text-base text-muted-foreground">{project.summary}</p>
           {project.techStack.length > 0 && (
             <div className="flex flex-wrap gap-1.5 pt-1">
               {project.techStack.map((tag) => (

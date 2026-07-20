@@ -30,7 +30,7 @@ export default async function ProjectsPage({
     <div className="space-y-8">
       <Reveal className="space-y-2">
         <h1 className="text-3xl font-semibold tracking-tight">Projects</h1>
-        <p className="text-muted-foreground">Things I&apos;ve built.</p>
+        <p className="text-lg text-muted-foreground">Things I&apos;ve built.</p>
       </Reveal>
 
       {tag && (

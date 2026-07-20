@@ -16,7 +16,7 @@ export function EmptyState({
       </div>
       <div className="space-y-1">
         <p className="font-medium">{title}</p>
-        {description && <p className="text-sm text-muted-foreground">{description}</p>}
+        {description && <p className="text-base text-muted-foreground">{description}</p>}
       </div>
     </div>
   );
