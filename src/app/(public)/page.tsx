@@ -126,7 +126,7 @@ export default async function HomePage() {
       </SectionBand>
 
       <SectionBand tinted>
-        <section id="about" className="scroll-mt-24 max-w-2xl space-y-6">
+        <section id="about" className="scroll-mt-24 space-y-6">
           <Reveal>
             <SectionHeading eyebrow="Get to know me" title="About" />
           </Reveal>
