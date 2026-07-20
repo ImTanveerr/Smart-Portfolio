@@ -33,7 +33,7 @@ export default async function HomePage() {
     <div className="space-y-20">
       <ProfileHero profile={profile} />
 
-      <section className="space-y-6">
+      <section id="projects" className="scroll-mt-24 space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold tracking-tight">Featured projects</h2>
           <Link
@@ -58,7 +58,7 @@ export default async function HomePage() {
         )}
       </section>
 
-      <section className="space-y-6">
+      <section id="blog" className="scroll-mt-24 space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold tracking-tight">Latest posts</h2>
           <Link

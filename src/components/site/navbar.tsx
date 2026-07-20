@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const links = [
-  { href: "/projects", label: "Projects" },
-  { href: "/blog", label: "Blog" },
+  { href: "/#projects", label: "Projects" },
+  { href: "/#blog", label: "Blog" },
   { href: "/about", label: "About" },
 ];
 
@@ -22,8 +22,7 @@ export function Navbar() {
         </Link>
         <nav className="flex items-center gap-6 text-sm">
           {links.map((link) => {
-            const isActive =
-              pathname === link.href || pathname.startsWith(`${link.href}/`);
+            const isActive = !link.href.includes("#") && pathname === link.href;
             return (
               <Link
                 key={link.href}
