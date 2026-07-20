@@ -87,41 +87,49 @@ model Tag {
 }
 
 model Profile {
-  id          String   @id @default("profile")
-  name        String?
-  title       String?
-  description String?
-  email       String?
-  phone       String?
-  avatarImage String?
-  githubUrl   String?
-  linkedinUrl String?
-  twitterUrl  String?
-  websiteUrl  String?
-  updatedAt   DateTime @updatedAt
+  id           String   @id @default("profile")
+  name         String?
+  title        String?
+  description  String?
+  aboutContent String?
+  email        String?
+  phone        String?
+  avatarImage  String?
+  githubUrl    String?
+  linkedinUrl  String?
+  twitterUrl   String?
+  websiteUrl   String?
+  updatedAt    DateTime @updatedAt
 }
 ```
 
 `Tag` is shared between posts (topics) and projects (tech stack) to keep the model simple.
 
 `Profile` is a **singleton** — always looked up/upserted by the fixed id `"profile"`
-(`src/lib/profile.ts` exports `PROFILE_ID` and a `getProfile()` helper both the admin page and
-public home page use). It backs the admin Profile section (`/admin/profile`) and the home page
-hero: avatar, name, title, description, email, phone, and social links (GitHub/LinkedIn/X/website).
-Every field is optional — the hero falls back to generic placeholder copy until it's filled in, so
+(`src/lib/profile.ts` exports `PROFILE_ID` and a `getProfile()` helper the admin page and every
+public page that needs it uses). It backs the admin Profile section (`/admin/profile`), the home
+page hero (avatar, name, title, description, email, phone, social links), **and** the About
+content (`aboutContent`, edited via the same markdown editor used for post/project bodies) —
+shown both in a dedicated `#about` section on the home page and on the standalone `/about` page,
+which reads the same field so there's a single source of truth rather than two places to edit.
+Every field is optional — public pages fall back to generic placeholder copy until filled in, so
 nothing looks broken before the admin sets it.
 
 ---
 
 ## 4. Routes / Pages
 
-**Public**
-- `/` — home: hero/intro, featured projects, latest posts
+**Public** — the navbar links to `/#projects`, `/#blog`, `/#about` (landing-page style: scroll to
+the section on the home page, navigating to `/` first if you're elsewhere) rather than to
+`/projects`, `/blog`, `/about` directly. Each home section still has a "View all" link to the
+full standalone page for `/projects` and `/blog`; `/about` itself still exists as a directly
+linkable URL (e.g. for a resume) showing the same `aboutContent`.
+- `/` — home: hero, featured projects (`#projects`), latest posts (`#blog`), about (`#about`)
 - `/projects` — grid of all projects, filterable by tag
 - `/projects/[slug]` — project detail (overview, tech stack, links, screenshots)
 - `/blog` — list of published posts, filterable by tag, paginated
 - `/blog/[slug]` — post detail (rendered Markdown)
-- `/about` — bio/skills/contact links
+- `/about` — renders `Profile.aboutContent` (same content as the home page's About section)
 
 **Admin** (all guarded except `/admin/login`)
 - `/admin/login` — credentials login form
@@ -307,7 +315,9 @@ Prisma docs/tutorials:
 
 ## 12. Open Items / Things to Confirm Later
 
-- Real name/branding, bio content, and social links for the `/about` page and footer.
+- Real name/title/bio/contact/social info — now editable at `/admin/profile` rather than requiring
+  a code change, but still needs to actually be filled in with your real information.
+- Footer branding (still says generic "Portfolio").
 - Whether you want a contact form or just links (email/GitHub/LinkedIn).
 - Domain name for deployment (optional).
 - Whether Phase 2 image upload is worth adding, or URL-paste is fine long-term.

@@ -6,6 +6,7 @@ import { ProjectCard } from "@/components/site/project-card";
 import { PostCard } from "@/components/site/post-card";
 import { EmptyState } from "@/components/site/empty-state";
 import { ProfileHero } from "@/components/site/profile-hero";
+import { MarkdownContent } from "@/components/site/markdown-content";
 
 // Otherwise Next.js prerenders this page statically at build time (no params/
 // searchParams to signal dynamic rendering), so newly published content
@@ -81,6 +82,16 @@ export default async function HomePage() {
             ))}
           </div>
         )}
+      </section>
+
+      <section id="about" className="scroll-mt-24 max-w-2xl space-y-6">
+        <h2 className="text-xl font-semibold tracking-tight">About</h2>
+        <MarkdownContent
+          content={
+            profile?.aboutContent ||
+            "Add your bio from the admin panel (Profile section) to fill in this section."
+          }
+        />
       </section>
     </div>
   );

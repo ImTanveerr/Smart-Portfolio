@@ -20,6 +20,7 @@ export async function updateProfile(values: ProfileFormValues): Promise<ActionRe
     name: data.name || null,
     title: data.title || null,
     description: data.description || null,
+    aboutContent: data.aboutContent || null,
     email: data.email || null,
     phone: data.phone || null,
     avatarImage: data.avatarImage || null,
@@ -37,5 +38,6 @@ export async function updateProfile(values: ProfileFormValues): Promise<ActionRe
 
   revalidatePath("/admin/profile");
   revalidatePath("/");
+  revalidatePath("/about");
   return { success: true };
 }

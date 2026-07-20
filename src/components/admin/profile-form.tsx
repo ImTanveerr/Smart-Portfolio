@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { profileSchema, type ProfileFormValues } from "@/lib/validations";
 import { updateProfile } from "@/lib/actions/profile";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
+import { MarkdownEditor } from "@/components/admin/markdown-editor";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,6 +30,7 @@ export function ProfileForm({ defaultValues }: { defaultValues?: Partial<Profile
       name: "",
       title: "",
       description: "",
+      aboutContent: "",
       email: "",
       phone: "",
       avatarImage: "",
@@ -41,6 +43,7 @@ export function ProfileForm({ defaultValues }: { defaultValues?: Partial<Profile
   });
 
   const avatarImage = watch("avatarImage");
+  const aboutContent = watch("aboutContent");
 
   async function onSubmit(values: ProfileFormValues) {
     setServerError(null);
@@ -91,6 +94,17 @@ export function ProfileForm({ defaultValues }: { defaultValues?: Partial<Profile
         <Textarea id="description" rows={3} {...register("description")} />
         {errors.description && (
           <p className="text-sm text-destructive">{errors.description.message}</p>
+        )}
+      </div>
+
+      <div className="space-y-1">
+        <Label>About (shown on the home page and the About page)</Label>
+        <MarkdownEditor
+          value={aboutContent ?? ""}
+          onChange={(value) => setValue("aboutContent", value, { shouldValidate: true })}
+        />
+        {errors.aboutContent && (
+          <p className="text-sm text-destructive">{errors.aboutContent.message}</p>
         )}
       </div>
 

@@ -36,6 +36,7 @@ export const profileSchema = z.object({
   name: z.string().max(100).optional().or(z.literal("")),
   title: z.string().max(150).optional().or(z.literal("")),
   description: z.string().max(1000).optional().or(z.literal("")),
+  aboutContent: z.string().max(10000).optional().or(z.literal("")),
   email: z.string().email("Must be a valid email").optional().or(z.literal("")),
   phone: z.string().max(30).optional().or(z.literal("")),
   avatarImage: z.string().url("Must be a valid URL").optional().or(z.literal("")),

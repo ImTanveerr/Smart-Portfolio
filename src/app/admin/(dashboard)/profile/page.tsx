@@ -9,7 +9,7 @@ export default async function AdminProfilePage() {
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold">Profile</h1>
         <p className="text-muted-foreground">
-          Shown in the hero section on the home page.
+          Shown in the hero section and the About section on the home page.
         </p>
       </div>
       <ProfileForm
@@ -17,6 +17,7 @@ export default async function AdminProfilePage() {
           name: profile?.name ?? "",
           title: profile?.title ?? "",
           description: profile?.description ?? "",
+          aboutContent: profile?.aboutContent ?? "",
           email: profile?.email ?? "",
           phone: profile?.phone ?? "",
           avatarImage: profile?.avatarImage ?? "",
