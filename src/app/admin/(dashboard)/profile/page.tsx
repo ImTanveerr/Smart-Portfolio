@@ -21,6 +21,7 @@ export default async function AdminProfilePage() {
           email: profile?.email ?? "",
           phone: profile?.phone ?? "",
           avatarImage: profile?.avatarImage ?? "",
+          avatarImage2: profile?.avatarImage2 ?? "",
           githubUrl: profile?.githubUrl ?? "",
           linkedinUrl: profile?.linkedinUrl ?? "",
           twitterUrl: profile?.twitterUrl ?? "",

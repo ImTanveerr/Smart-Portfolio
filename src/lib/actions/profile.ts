@@ -24,6 +24,7 @@ export async function updateProfile(values: ProfileFormValues): Promise<ActionRe
     email: data.email || null,
     phone: data.phone || null,
     avatarImage: data.avatarImage || null,
+    avatarImage2: data.avatarImage2 || null,
     githubUrl: data.githubUrl || null,
     linkedinUrl: data.linkedinUrl || null,
     twitterUrl: data.twitterUrl || null,

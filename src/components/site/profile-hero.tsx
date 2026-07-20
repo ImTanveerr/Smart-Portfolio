@@ -1,12 +1,27 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useReducedMotion, type Variants } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion, type Variants } from "framer-motion";
 import { ArrowRight, User } from "lucide-react";
 import type { Profile } from "@/generated/prisma/client";
 import { Button } from "@/components/ui/button";
 import { getSocialLinks } from "@/lib/social-links";
+
+function useCyclingImage(images: string[], intervalMs = 3000) {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (images.length < 2) return;
+    const id = setInterval(() => {
+      setIndex((i) => (i + 1) % images.length);
+    }, intervalMs);
+    return () => clearInterval(id);
+  }, [images.length, intervalMs]);
+
+  return images[index];
+}
 
 export function ProfileHero({ profile }: { profile: Profile | null }) {
   const shouldReduceMotion = useReducedMotion();
@@ -17,6 +32,11 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
     "Take a look at what I've shipped, or read what I've learned along the way.";
 
   const contactLinks = getSocialLinks(profile);
+
+  const images = [profile?.avatarImage, profile?.avatarImage2].filter(
+    (src): src is string => Boolean(src)
+  );
+  const activeImage = useCyclingImage(images);
 
   const container: Variants = {
     hidden: {},
@@ -29,34 +49,48 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
 
   return (
     <section className="relative -mt-12 ml-[calc(50%-50vw)] w-screen overflow-hidden md:-mt-16">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
+      >
+        <div className="absolute top-1/2 left-1/4 size-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,var(--accent-a),transparent)] opacity-25 blur-3xl" />
+        <div className="absolute top-1/2 right-1/4 size-[36rem] translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,var(--accent-b),transparent)] opacity-25 blur-3xl" />
+      </div>
+
       <div className="grid md:grid-cols-2">
         <div className="flex min-h-[22rem] items-center justify-center py-12 sm:min-h-[26rem] md:min-h-[34rem] lg:min-h-[40rem]">
           <motion.div
             initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
-            className="relative"
           >
-            <div
-              aria-hidden
-              className="absolute inset-0 -z-10 scale-110 rounded-full bg-gradient-to-br from-[var(--accent-a)] to-[var(--accent-b)] opacity-30 blur-2xl"
-            />
             <motion.div
               animate={shouldReduceMotion ? undefined : { y: [0, -10, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="size-56 sm:size-72 lg:size-80"
+              className="relative size-56 overflow-hidden rounded-full ring-1 ring-border ring-offset-4 ring-offset-background sm:size-72 lg:size-80"
             >
-              {profile?.avatarImage ? (
-                <Image
-                  src={profile.avatarImage}
-                  alt={profile.name ?? "Profile"}
-                  width={320}
-                  height={320}
-                  priority
-                  className="size-56 rounded-full object-cover ring-1 ring-border ring-offset-4 ring-offset-background sm:size-72 lg:size-80"
-                />
+              {activeImage ? (
+                <AnimatePresence mode="sync">
+                  <motion.div
+                    key={activeImage}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                    className="absolute inset-0"
+                  >
+                    <Image
+                      src={activeImage}
+                      alt={profile?.name ?? "Profile"}
+                      fill
+                      priority
+                      sizes="(min-width: 1024px) 20rem, (min-width: 640px) 18rem, 14rem"
+                      className="object-cover"
+                    />
+                  </motion.div>
+                </AnimatePresence>
               ) : (
-                <div className="flex size-56 items-center justify-center rounded-full bg-muted ring-1 ring-border ring-offset-4 ring-offset-background sm:size-72 lg:size-80">
+                <div className="flex size-full items-center justify-center bg-muted">
                   <User className="size-20 text-muted-foreground" strokeWidth={1.5} />
                 </div>
               )}
@@ -68,7 +102,7 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
           initial="hidden"
           animate="visible"
           variants={container}
-          className="flex flex-col justify-center gap-5 bg-background px-6 py-12 sm:px-10 md:min-h-[34rem] lg:min-h-[40rem] lg:px-16"
+          className="flex flex-col justify-center gap-5 px-6 py-12 sm:px-10 md:min-h-[34rem] lg:min-h-[40rem] lg:px-16"
         >
           <motion.h1
             variants={item}

@@ -59,6 +59,7 @@ model Profile {
   email         String?
   phone         String?
   avatarImage   String?
+  avatarImage2  String?
   githubUrl     String?
   linkedinUrl   String?
   twitterUrl    String?

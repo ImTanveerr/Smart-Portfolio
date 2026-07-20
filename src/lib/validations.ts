@@ -40,6 +40,7 @@ export const profileSchema = z.object({
   email: z.string().email("Must be a valid email").optional().or(z.literal("")),
   phone: z.string().max(30).optional().or(z.literal("")),
   avatarImage: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  avatarImage2: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   githubUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   linkedinUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   twitterUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),

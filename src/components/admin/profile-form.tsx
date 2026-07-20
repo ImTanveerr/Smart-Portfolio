@@ -36,6 +36,7 @@ export function ProfileForm({ defaultValues }: { defaultValues?: Partial<Profile
       email: "",
       phone: "",
       avatarImage: "",
+      avatarImage2: "",
       githubUrl: "",
       linkedinUrl: "",
       twitterUrl: "",
@@ -48,6 +49,7 @@ export function ProfileForm({ defaultValues }: { defaultValues?: Partial<Profile
   });
 
   const avatarImage = watch("avatarImage");
+  const avatarImage2 = watch("avatarImage2");
   const aboutContent = watch("aboutContent");
   const resumeUrl = watch("resumeUrl");
 
@@ -70,16 +72,32 @@ export function ProfileForm({ defaultValues }: { defaultValues?: Partial<Profile
       {serverError && <p className="text-sm text-destructive">{serverError}</p>}
       {success && <p className="text-sm text-green-600">Profile saved.</p>}
 
-      <div className="space-y-1">
-        <Label htmlFor="avatarImage">Profile image</Label>
-        <ImageUploadField
-          value={avatarImage ?? ""}
-          onChange={(value) => setValue("avatarImage", value, { shouldValidate: true })}
-          folder="profile"
-        />
-        {errors.avatarImage && (
-          <p className="text-sm text-destructive">{errors.avatarImage.message}</p>
-        )}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-1">
+          <Label htmlFor="avatarImage">Profile image 1</Label>
+          <ImageUploadField
+            value={avatarImage ?? ""}
+            onChange={(value) => setValue("avatarImage", value, { shouldValidate: true })}
+            folder="profile"
+          />
+          {errors.avatarImage && (
+            <p className="text-sm text-destructive">{errors.avatarImage.message}</p>
+          )}
+        </div>
+        <div className="space-y-1">
+          <Label htmlFor="avatarImage2">Profile image 2 (optional)</Label>
+          <ImageUploadField
+            value={avatarImage2 ?? ""}
+            onChange={(value) => setValue("avatarImage2", value, { shouldValidate: true })}
+            folder="profile"
+          />
+          <p className="text-sm text-muted-foreground">
+            If set, the hero alternates between both images every few seconds.
+          </p>
+          {errors.avatarImage2 && (
+            <p className="text-sm text-destructive">{errors.avatarImage2.message}</p>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
