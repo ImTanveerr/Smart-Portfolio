@@ -18,97 +18,99 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
 
   const contactLinks = getSocialLinks(profile);
 
-  const fadeUp: Variants = {
+  const container: Variants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+  };
+  const item: Variants = {
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 16 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.21, 0.47, 0.32, 0.98] } },
   };
 
   return (
     <section className="relative -mt-12 ml-[calc(50%-50vw)] w-screen overflow-hidden md:-mt-16">
-      <div className="relative h-[26rem] w-full sm:h-[30rem] lg:h-[36rem]">
-        {profile?.avatarImage ? (
-          <Image
-            src={profile.avatarImage}
-            alt={profile.name ?? "Profile"}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-top"
-          />
-        ) : (
-          <div className="flex size-full items-center justify-center bg-muted">
-            <User className="size-24 text-muted-foreground" strokeWidth={1} />
-          </div>
-        )}
-
-        <div className="absolute inset-0">
-          <div className="relative mx-auto h-full max-w-5xl">
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={fadeUp}
-              className="absolute bottom-6 left-6 max-w-xs rounded-2xl border border-border bg-background/80 px-5 py-4 shadow-lg backdrop-blur-md sm:bottom-8 sm:left-8"
-            >
-              <h1 className="text-2xl leading-tight font-bold tracking-tight text-balance sm:text-3xl lg:text-4xl">
-                {name}
-              </h1>
-            </motion.div>
-
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={fadeUp}
-              transition={{ delay: 0.1 }}
-              className="absolute right-6 bottom-6 max-w-xs space-y-3 rounded-2xl border border-border bg-background/80 px-5 py-4 text-right shadow-lg backdrop-blur-md sm:right-8 sm:bottom-8 sm:max-w-sm"
-            >
-              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-3 py-1 text-xs font-medium text-muted-foreground">
-                <span className="size-1.5 shrink-0 rounded-full bg-gradient-to-br from-[var(--accent-a)] to-[var(--accent-b)]" />
-                {title}
-              </span>
-
-              <p className="text-sm text-muted-foreground text-pretty">{description}</p>
-
-              <div className="flex flex-wrap justify-end gap-2 pt-1">
-                <Button
-                  size="sm"
-                  nativeButton={false}
-                  render={<Link href="/projects" />}
-                  className="group bg-gradient-to-r from-[var(--accent-a)] to-[var(--accent-b)] text-white shadow-md shadow-[var(--accent-a)]/25 transition-all hover:opacity-90"
-                >
-                  View projects
-                  <ArrowRight className="transition-transform group-hover:translate-x-0.5" />
-                </Button>
-                <Button size="sm" variant="outline" nativeButton={false} render={<Link href="/blog" />}>
-                  Read the blog
-                </Button>
-              </div>
-
-              {contactLinks.length > 0 && (
-                <div className="flex flex-wrap justify-end gap-1.5 pt-1">
-                  {contactLinks.map((link) => (
-                    <Button
-                      key={link.label}
-                      variant="ghost"
-                      size="icon-sm"
-                      nativeButton={false}
-                      aria-label={link.label}
-                      className="rounded-full border border-transparent transition-transform hover:border-border hover:-translate-y-0.5 [&_svg]:size-3.5"
-                      render={
-                        <a
-                          href={link.href}
-                          target={link.href.startsWith("http") ? "_blank" : undefined}
-                          rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                        />
-                      }
-                    >
-                      <link.icon />
-                    </Button>
-                  ))}
-                </div>
-              )}
-            </motion.div>
-          </div>
+      <div className="grid md:grid-cols-2">
+        <div className="relative h-72 sm:h-96 md:h-auto md:min-h-[34rem] lg:min-h-[40rem]">
+          {profile?.avatarImage ? (
+            <Image
+              src={profile.avatarImage}
+              alt={profile.name ?? "Profile"}
+              fill
+              priority
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className="object-cover object-top"
+            />
+          ) : (
+            <div className="flex size-full items-center justify-center bg-muted">
+              <User className="size-24 text-muted-foreground" strokeWidth={1} />
+            </div>
+          )}
         </div>
+
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={container}
+          className="flex flex-col justify-center gap-5 bg-background px-6 py-12 sm:px-10 md:min-h-[34rem] lg:min-h-[40rem] lg:px-16"
+        >
+          <motion.h1
+            variants={item}
+            className="text-4xl leading-tight font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl"
+          >
+            {name}
+          </motion.h1>
+
+          <motion.span
+            variants={item}
+            className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-muted/50 px-3.5 py-1.5 text-sm font-medium text-muted-foreground"
+          >
+            <span className="size-1.5 shrink-0 rounded-full bg-gradient-to-br from-[var(--accent-a)] to-[var(--accent-b)]" />
+            {title}
+          </motion.span>
+
+          <motion.p variants={item} className="max-w-md text-lg text-muted-foreground text-pretty">
+            {description}
+          </motion.p>
+
+          <motion.div variants={item} className="flex flex-wrap items-center gap-3 pt-2">
+            <Button
+              size="lg"
+              nativeButton={false}
+              render={<Link href="/projects" />}
+              className="group bg-gradient-to-r from-[var(--accent-a)] to-[var(--accent-b)] text-white shadow-lg shadow-[var(--accent-a)]/25 transition-all hover:opacity-90 hover:shadow-xl hover:shadow-[var(--accent-a)]/30"
+            >
+              View projects
+              <ArrowRight className="transition-transform group-hover:translate-x-0.5" />
+            </Button>
+            <Button size="lg" variant="outline" nativeButton={false} render={<Link href="/blog" />}>
+              Read the blog
+            </Button>
+          </motion.div>
+
+          {contactLinks.length > 0 && (
+            <motion.div variants={item} className="flex flex-wrap items-center gap-2 pt-1">
+              {contactLinks.map((link) => (
+                <Button
+                  key={link.label}
+                  variant="ghost"
+                  size="icon-lg"
+                  nativeButton={false}
+                  aria-label={link.label}
+                  className="size-10 rounded-full border border-border/60 text-muted-foreground transition-all hover:-translate-y-0.5 hover:border-[var(--accent-a)]/40 hover:bg-muted hover:text-foreground hover:shadow-md hover:shadow-[var(--accent-a)]/10 [&_svg]:size-4"
+                  render={
+                    <a
+                      href={link.href}
+                      target={link.href.startsWith("http") ? "_blank" : undefined}
+                      rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                    />
+                  }
+                >
+                  <link.icon />
+                </Button>
+              ))}
+            </motion.div>
+          )}
+        </motion.div>
       </div>
     </section>
   );
