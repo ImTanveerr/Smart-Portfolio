@@ -8,6 +8,9 @@ import { EmptyState } from "@/components/site/empty-state";
 import { ProfileHero } from "@/components/site/profile-hero";
 import { MarkdownContent } from "@/components/site/markdown-content";
 import { SkillsSection } from "@/components/site/skills-section";
+import { SectionHeading } from "@/components/site/section-heading";
+import { Reveal } from "@/components/site/reveal";
+import { StaggerGroup, StaggerItem } from "@/components/site/stagger";
 import { Button } from "@/components/ui/button";
 
 // Otherwise Next.js prerenders this page statically at build time (no params/
@@ -37,26 +40,33 @@ export default async function HomePage() {
   ]);
 
   return (
-    <div className="space-y-20">
+    <div className="space-y-24">
       <ProfileHero profile={profile} />
 
       {skills.length > 0 && (
         <section id="skills" className="scroll-mt-24 space-y-6">
-          <h2 className="text-xl font-semibold tracking-tight">Skills</h2>
+          <Reveal>
+            <SectionHeading eyebrow="Toolbox" title="Skills" />
+          </Reveal>
           <SkillsSection skills={skills} />
         </section>
       )}
 
       <section id="projects" className="scroll-mt-24 space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold tracking-tight">Featured projects</h2>
-          <Link
-            href="/projects"
-            className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
-          >
-            View all
-          </Link>
-        </div>
+        <Reveal>
+          <SectionHeading
+            eyebrow="Selected work"
+            title="Featured projects"
+            action={
+              <Link
+                href="/projects"
+                className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+              >
+                View all
+              </Link>
+            }
+          />
+        </Reveal>
         {featuredProjects.length === 0 ? (
           <EmptyState
             icon={FolderGit2}
@@ -64,24 +74,31 @@ export default async function HomePage() {
             description="Mark a project as featured from the admin panel to have it show up here."
           />
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <StaggerGroup className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {featuredProjects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
+              <StaggerItem key={project.id}>
+                <ProjectCard project={project} />
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerGroup>
         )}
       </section>
 
       <section id="blog" className="scroll-mt-24 space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold tracking-tight">Latest posts</h2>
-          <Link
-            href="/blog"
-            className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
-          >
-            View all
-          </Link>
-        </div>
+        <Reveal>
+          <SectionHeading
+            eyebrow="Writing"
+            title="Latest posts"
+            action={
+              <Link
+                href="/blog"
+                className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+              >
+                View all
+              </Link>
+            }
+          />
+        </Reveal>
         {latestPosts.length === 0 ? (
           <EmptyState
             icon={Newspaper}
@@ -89,25 +106,35 @@ export default async function HomePage() {
             description="Publish a post from the admin panel to have it show up here."
           />
         ) : (
-          <div className="space-y-6">
+          <StaggerGroup className="space-y-6">
             {latestPosts.map((post) => (
-              <PostCard key={post.id} post={post} />
+              <StaggerItem key={post.id}>
+                <PostCard post={post} />
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerGroup>
         )}
       </section>
 
       <section id="about" className="scroll-mt-24 max-w-2xl space-y-6">
-        <h2 className="text-xl font-semibold tracking-tight">About</h2>
-        <MarkdownContent
-          content={
-            profile?.aboutContent ||
-            "Add your bio from the admin panel (Profile section) to fill in this section."
-          }
-        />
+        <Reveal>
+          <SectionHeading eyebrow="Get to know me" title="About" />
+        </Reveal>
+        <Reveal delay={0.05}>
+          <MarkdownContent
+            content={
+              profile?.aboutContent ||
+              "Add your bio from the admin panel (Profile section) to fill in this section."
+            }
+          />
+        </Reveal>
         {profile?.resumeUrl && (
-          <div className="flex flex-wrap gap-3">
-            <Button variant="outline" nativeButton={false} render={<a href="/api/resume" target="_blank" rel="noopener noreferrer" />}>
+          <Reveal delay={0.1} className="flex flex-wrap gap-3">
+            <Button
+              variant="outline"
+              nativeButton={false}
+              render={<a href="/api/resume" target="_blank" rel="noopener noreferrer" />}
+            >
               <FileText />
               View resume
             </Button>
@@ -115,7 +142,7 @@ export default async function HomePage() {
               <Download />
               Download resume
             </Button>
-          </div>
+          </Reveal>
         )}
       </section>
     </div>

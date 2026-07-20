@@ -14,14 +14,14 @@ type ProjectCardData = {
 export function ProjectCard({ project }: { project: ProjectCardData }) {
   return (
     <Link href={`/projects/${project.slug}`} className="group block h-full">
-      <Card className="h-full gap-0 py-0 transition-shadow hover:shadow-md">
+      <Card className="h-full gap-0 py-0 ring-foreground/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:ring-[var(--accent-a)]/30">
         <div className="aspect-video w-full overflow-hidden rounded-t-xl bg-muted">
           {project.coverImage ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={project.coverImage}
               alt={project.title}
-              className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+              className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
             <div className="flex size-full items-center justify-center">
@@ -30,7 +30,7 @@ export function ProjectCard({ project }: { project: ProjectCardData }) {
           )}
         </div>
         <CardContent className="space-y-2 py-4">
-          <h2 className="font-semibold tracking-tight group-hover:underline group-hover:underline-offset-2">
+          <h2 className="font-semibold tracking-tight group-hover:text-[var(--accent-a)] dark:group-hover:text-[var(--accent-b)]">
             {project.title}
           </h2>
           <p className="line-clamp-2 text-sm text-muted-foreground">{project.summary}</p>

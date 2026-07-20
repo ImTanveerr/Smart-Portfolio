@@ -11,7 +11,7 @@ type PostCardData = {
 
 export function PostCard({ post }: { post: PostCardData }) {
   return (
-    <article className="space-y-2 border-b border-border pb-8">
+    <article className="group space-y-2 border-b border-border py-2 pb-8 transition-colors">
       {post.publishedAt && (
         <time className="text-sm text-muted-foreground">
           {post.publishedAt.toLocaleDateString(undefined, {
@@ -22,7 +22,10 @@ export function PostCard({ post }: { post: PostCardData }) {
         </time>
       )}
       <h2 className="text-xl font-semibold tracking-tight">
-        <Link href={`/blog/${post.slug}`} className="hover:underline hover:underline-offset-2">
+        <Link
+          href={`/blog/${post.slug}`}
+          className="transition-colors group-hover:text-[var(--accent-a)] dark:group-hover:text-[var(--accent-b)]"
+        >
           {post.title}
         </Link>
       </h2>

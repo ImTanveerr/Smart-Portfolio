@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Download, FileText } from "lucide-react";
 import { getProfile } from "@/lib/profile";
 import { MarkdownContent } from "@/components/site/markdown-content";
+import { Reveal } from "@/components/site/reveal";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
@@ -16,15 +17,19 @@ export default async function AboutPage() {
 
   return (
     <div className="max-w-2xl space-y-6">
-      <h1 className="text-3xl font-semibold tracking-tight">About</h1>
-      <MarkdownContent
-        content={
-          profile?.aboutContent ||
-          "Add your bio from the admin panel (Profile section) to fill in this page."
-        }
-      />
+      <Reveal>
+        <h1 className="text-3xl font-semibold tracking-tight">About</h1>
+      </Reveal>
+      <Reveal delay={0.05}>
+        <MarkdownContent
+          content={
+            profile?.aboutContent ||
+            "Add your bio from the admin panel (Profile section) to fill in this page."
+          }
+        />
+      </Reveal>
       {profile?.resumeUrl && (
-        <div className="flex flex-wrap gap-3">
+        <Reveal delay={0.1} className="flex flex-wrap gap-3">
           <Button
             variant="outline"
             nativeButton={false}
@@ -37,7 +42,7 @@ export default async function AboutPage() {
             <Download />
             Download resume
           </Button>
-        </div>
+        </Reveal>
       )}
     </div>
   );

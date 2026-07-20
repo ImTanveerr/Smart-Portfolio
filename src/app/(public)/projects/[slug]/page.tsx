@@ -5,6 +5,7 @@ import { ArrowLeft, Code, ExternalLink } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { MarkdownContent } from "@/components/site/markdown-content";
 import { TagPills } from "@/components/site/tag-pills";
+import { Reveal } from "@/components/site/reveal";
 import { Button } from "@/components/ui/button";
 
 export async function generateMetadata({
@@ -45,25 +46,27 @@ export default async function ProjectDetailPage({
     <article className="mx-auto max-w-2xl space-y-8">
       <Link
         href="/projects"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="size-4" />
         All projects
       </Link>
 
       {project.coverImage && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={project.coverImage}
-          alt={project.title}
-          className="aspect-video w-full rounded-xl border border-border object-cover"
-        />
+        <Reveal>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={project.coverImage}
+            alt={project.title}
+            className="aspect-video w-full rounded-xl border border-border object-cover"
+          />
+        </Reveal>
       )}
 
-      <div className="space-y-3">
+      <Reveal delay={0.05} className="space-y-3">
         <h1 className="text-3xl font-semibold tracking-tight">{project.title}</h1>
         <p className="text-lg text-muted-foreground">{project.summary}</p>
-      </div>
+      </Reveal>
 
       <TagPills tags={project.techStack} basePath="/projects" />
 
@@ -83,6 +86,7 @@ export default async function ProjectDetailPage({
             <Button
               nativeButton={false}
               render={<a href={project.liveUrl} target="_blank" rel="noopener noreferrer" />}
+              className="bg-gradient-to-r from-[var(--accent-a)] to-[var(--accent-b)] text-white hover:opacity-90"
             >
               <ExternalLink />
               Live site

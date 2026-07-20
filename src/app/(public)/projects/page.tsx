@@ -4,6 +4,8 @@ import { FolderGit2, X } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { ProjectCard } from "@/components/site/project-card";
 import { EmptyState } from "@/components/site/empty-state";
+import { Reveal } from "@/components/site/reveal";
+import { StaggerGroup, StaggerItem } from "@/components/site/stagger";
 import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = {
@@ -26,10 +28,10 @@ export default async function ProjectsPage({
 
   return (
     <div className="space-y-8">
-      <div className="space-y-2">
+      <Reveal className="space-y-2">
         <h1 className="text-3xl font-semibold tracking-tight">Projects</h1>
         <p className="text-muted-foreground">Things I&apos;ve built.</p>
-      </div>
+      </Reveal>
 
       {tag && (
         <Link href="/projects" className="inline-block">
@@ -47,11 +49,13 @@ export default async function ProjectsPage({
           description={tag ? undefined : "Add one from the admin panel."}
         />
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <StaggerGroup className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+            <StaggerItem key={project.id}>
+              <ProjectCard project={project} />
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerGroup>
       )}
     </div>
   );

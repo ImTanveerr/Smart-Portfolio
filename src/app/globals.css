@@ -83,6 +83,8 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --accent-a: oklch(0.6 0.19 265);
+  --accent-b: oklch(0.72 0.15 195);
 }
 
 .dark {
@@ -117,6 +119,8 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --accent-a: oklch(0.72 0.19 265);
+  --accent-b: oklch(0.8 0.14 195);
 }
 
 @layer base {
@@ -128,5 +132,14 @@
   }
   html {
     @apply font-sans;
+  }
+  ::selection {
+    background-color: color-mix(in oklch, var(--accent-a), transparent 70%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
