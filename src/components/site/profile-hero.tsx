@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { ArrowRight, User } from "lucide-react";
 import type { Profile } from "@/generated/prisma/client";
@@ -26,6 +27,14 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 14 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.21, 0.47, 0.32, 0.98] } },
   };
+  const nameContainer: Variants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.07 } },
+  };
+  const nameWord: Variants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.21, 0.47, 0.32, 0.98] } },
+  };
 
   return (
     <section className="py-12 sm:py-20">
@@ -43,24 +52,22 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
           <motion.div
             animate={shouldReduceMotion ? undefined : { y: [0, -10, 0] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className={cn(
+              "relative size-48 overflow-hidden rounded-full sm:size-64",
+              "ring-1 ring-border ring-offset-4 ring-offset-background"
+            )}
           >
             {profile?.avatarImage ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={profile.avatarImage}
                 alt={profile.name ?? "Profile"}
-                className={cn(
-                  "size-48 rounded-full object-cover sm:size-64",
-                  "ring-1 ring-border ring-offset-4 ring-offset-background"
-                )}
+                fill
+                priority
+                sizes="(min-width: 640px) 16rem, 12rem"
+                className="object-cover"
               />
             ) : (
-              <div
-                className={cn(
-                  "flex size-48 items-center justify-center rounded-full bg-muted sm:size-64",
-                  "ring-1 ring-border ring-offset-4 ring-offset-background"
-                )}
-              >
+              <div className="flex size-full items-center justify-center bg-muted">
                 <User className="size-16 text-muted-foreground" strokeWidth={1.5} />
               </div>
             )}
@@ -73,12 +80,25 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
           variants={container}
           className="max-w-xl space-y-5 text-center md:text-left"
         >
-          <motion.div variants={item} className="space-y-1.5">
-            <h1 className="text-5xl font-semibold tracking-tight text-balance sm:text-6xl">
-              {name}
-            </h1>
-            <p className="text-xl font-medium text-muted-foreground text-balance">{title}</p>
-          </motion.div>
+          <div className="space-y-3">
+            <motion.h1
+              variants={nameContainer}
+              className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-5xl font-semibold tracking-tight sm:text-6xl md:justify-start"
+            >
+              {name.split(" ").map((word, i) => (
+                <motion.span key={i} variants={nameWord} className="inline-block">
+                  {word}
+                </motion.span>
+              ))}
+            </motion.h1>
+            <motion.span
+              variants={item}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-3 py-1 text-sm font-medium text-muted-foreground"
+            >
+              <span className="size-1.5 shrink-0 rounded-full bg-gradient-to-br from-[var(--accent-a)] to-[var(--accent-b)]" />
+              {title}
+            </motion.span>
+          </div>
           <motion.p variants={item} className="text-lg text-muted-foreground text-pretty">
             {description}
           </motion.p>

@@ -9,7 +9,7 @@ export default async function PublicLayout({ children }: { children: React.React
   return (
     <div id="top" className="relative flex min-h-screen flex-col">
       <AmbientBackground />
-      <Navbar />
+      <Navbar name={profile?.name} />
       <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-12 md:py-16">{children}</main>
       <Footer profile={profile} />
     </div>

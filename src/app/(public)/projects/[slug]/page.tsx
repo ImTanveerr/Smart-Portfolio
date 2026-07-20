@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Code, ExternalLink } from "lucide-react";
 import { prisma } from "@/lib/prisma";
@@ -53,12 +54,14 @@ export default async function ProjectDetailPage({
       </Link>
 
       {project.coverImage && (
-        <Reveal>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+        <Reveal className="relative aspect-video w-full overflow-hidden rounded-xl border border-border">
+          <Image
             src={project.coverImage}
             alt={project.title}
-            className="aspect-video w-full rounded-xl border border-border object-cover"
+            fill
+            priority
+            sizes="(min-width: 768px) 42rem, 100vw"
+            className="object-cover"
           />
         </Reveal>
       )}

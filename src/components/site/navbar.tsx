@@ -19,7 +19,14 @@ const links = [
 
 const sectionIds = links.map((link) => link.id);
 
-export function Navbar() {
+function getInitials(name?: string | null) {
+  const parts = name?.trim().split(/\s+/).filter(Boolean) ?? [];
+  if (parts.length === 0) return "P";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+export function Navbar({ name }: { name?: string | null }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const activeSection = useActiveSection(isHome ? sectionIds : []);
@@ -34,18 +41,21 @@ export function Navbar() {
   }, []);
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-50 border-b transition-colors duration-300",
-        scrolled
-          ? "border-border bg-background/80 shadow-sm backdrop-blur-md supports-backdrop-filter:bg-background/60"
-          : "border-transparent bg-background/40 backdrop-blur-sm"
-      )}
-    >
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-        <Link href="/" className="font-semibold tracking-tight">
-          <span className="bg-gradient-to-br from-[var(--accent-a)] to-[var(--accent-b)] bg-clip-text text-transparent">
-            Portfolio
+    <header className="sticky top-0 z-50 px-3 pt-3 sm:px-4 sm:pt-4">
+      <div
+        className={cn(
+          "relative mx-auto flex max-w-3xl items-center justify-between rounded-full border px-3 py-2 transition-all duration-300 sm:px-4",
+          scrolled
+            ? "border-border bg-background/85 shadow-md shadow-black/5 backdrop-blur-md"
+            : "border-border/50 bg-background/60 backdrop-blur-sm"
+        )}
+      >
+        <Link href="/" className="flex items-center gap-2">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[var(--accent-a)] to-[var(--accent-b)] text-xs font-semibold text-white">
+            {getInitials(name)}
+          </span>
+          <span className="hidden text-sm font-semibold tracking-tight sm:inline">
+            {name || "Portfolio"}
           </span>
         </Link>
 
@@ -72,7 +82,7 @@ export function Navbar() {
               </Link>
             );
           })}
-          <div className="ml-2 border-l border-border pl-2">
+          <div className="ml-1 border-l border-border pl-2">
             <ThemeToggle />
           </div>
         </nav>
@@ -93,20 +103,20 @@ export function Navbar() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.nav
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="overflow-hidden border-t border-border md:hidden"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="mx-auto mt-2 max-w-3xl overflow-hidden rounded-2xl border border-border bg-background/95 shadow-lg backdrop-blur-md md:hidden"
           >
-            <div className="flex flex-col gap-1 px-6 py-3">
+            <div className="flex flex-col gap-1 p-2">
               {links.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
-                    "rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
+                    "rounded-xl px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
                     isHome && activeSection === link.id && "bg-muted text-foreground"
                   )}
                 >
