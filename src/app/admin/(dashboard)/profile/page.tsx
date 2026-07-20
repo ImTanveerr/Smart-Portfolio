@@ -25,6 +25,9 @@ export default async function AdminProfilePage() {
           linkedinUrl: profile?.linkedinUrl ?? "",
           twitterUrl: profile?.twitterUrl ?? "",
           websiteUrl: profile?.websiteUrl ?? "",
+          resumeUrl: profile?.resumeUrl ?? "",
+          projectsCount: profile?.projectsCount ?? 3,
+          postsCount: profile?.postsCount ?? 3,
         }}
       />
     </div>

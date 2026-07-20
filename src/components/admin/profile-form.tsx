@@ -4,14 +4,16 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { profileSchema, type ProfileFormValues } from "@/lib/validations";
+import { profileSchema, type ProfileFormInput, type ProfileFormValues } from "@/lib/validations";
 import { updateProfile } from "@/lib/actions/profile";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
+import { ResumeUploadField } from "@/components/admin/resume-upload-field";
 import { MarkdownEditor } from "@/components/admin/markdown-editor";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 export function ProfileForm({ defaultValues }: { defaultValues?: Partial<ProfileFormValues> }) {
   const router = useRouter();
@@ -24,7 +26,7 @@ export function ProfileForm({ defaultValues }: { defaultValues?: Partial<Profile
     watch,
     setValue,
     formState: { errors, isSubmitting },
-  } = useForm<ProfileFormValues>({
+  } = useForm<ProfileFormInput, unknown, ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       name: "",
@@ -38,12 +40,16 @@ export function ProfileForm({ defaultValues }: { defaultValues?: Partial<Profile
       linkedinUrl: "",
       twitterUrl: "",
       websiteUrl: "",
+      resumeUrl: "",
+      projectsCount: 3,
+      postsCount: 3,
       ...defaultValues,
     },
   });
 
   const avatarImage = watch("avatarImage");
   const aboutContent = watch("aboutContent");
+  const resumeUrl = watch("resumeUrl");
 
   async function onSubmit(values: ProfileFormValues) {
     setServerError(null);
@@ -108,6 +114,17 @@ export function ProfileForm({ defaultValues }: { defaultValues?: Partial<Profile
         )}
       </div>
 
+      <div className="space-y-1">
+        <Label>Resume / CV (shown under the About section)</Label>
+        <ResumeUploadField
+          value={resumeUrl ?? ""}
+          onChange={(value) => setValue("resumeUrl", value, { shouldValidate: true })}
+        />
+        {errors.resumeUrl && (
+          <p className="text-sm text-destructive">{errors.resumeUrl.message}</p>
+        )}
+      </div>
+
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">
           <Label htmlFor="email">Email</Label>
@@ -152,6 +169,39 @@ export function ProfileForm({ defaultValues }: { defaultValues?: Partial<Profile
           {errors.websiteUrl && (
             <p className="text-sm text-destructive">{errors.websiteUrl.message}</p>
           )}
+        </div>
+      </div>
+
+      <Separator />
+
+      <div className="space-y-3">
+        <div className="space-y-1">
+          <Label className="text-base">Landing page display</Label>
+          <p className="text-sm text-muted-foreground">
+            How many items to show on the home page.
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-1">
+            <Label htmlFor="projectsCount">Featured projects to show</Label>
+            <Input
+              id="projectsCount"
+              type="number"
+              min={1}
+              max={12}
+              {...register("projectsCount")}
+            />
+            {errors.projectsCount && (
+              <p className="text-sm text-destructive">{errors.projectsCount.message}</p>
+            )}
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="postsCount">Latest posts to show</Label>
+            <Input id="postsCount" type="number" min={1} max={12} {...register("postsCount")} />
+            {errors.postsCount && (
+              <p className="text-sm text-destructive">{errors.postsCount.message}</p>
+            )}
+          </div>
         </div>
       </div>
 

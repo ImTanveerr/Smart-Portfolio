@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FolderGit2, Newspaper } from "lucide-react";
+import { Download, FileText, FolderGit2, Newspaper } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getProfile } from "@/lib/profile";
 import { ProjectCard } from "@/components/site/project-card";
@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/site/empty-state";
 import { ProfileHero } from "@/components/site/profile-hero";
 import { MarkdownContent } from "@/components/site/markdown-content";
 import { SkillsSection } from "@/components/site/skills-section";
+import { Button } from "@/components/ui/button";
 
 // Otherwise Next.js prerenders this page statically at build time (no params/
 // searchParams to signal dynamic rendering), so newly published content
@@ -15,21 +16,24 @@ import { SkillsSection } from "@/components/site/skills-section";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [featuredProjects, latestPosts, profile, skills] = await Promise.all([
+  const [profile, skills] = await Promise.all([
+    getProfile(),
+    prisma.skill.findMany({ orderBy: { name: "asc" } }),
+  ]);
+
+  const [featuredProjects, latestPosts] = await Promise.all([
     prisma.project.findMany({
       where: { featured: true },
       orderBy: { order: "asc" },
-      take: 3,
+      take: profile?.projectsCount ?? 3,
       include: { techStack: true },
     }),
     prisma.post.findMany({
       where: { published: true },
       orderBy: { publishedAt: "desc" },
-      take: 3,
+      take: profile?.postsCount ?? 3,
       include: { tags: true },
     }),
-    getProfile(),
-    prisma.skill.findMany({ orderBy: { name: "asc" } }),
   ]);
 
   return (
@@ -101,6 +105,18 @@ export default async function HomePage() {
             "Add your bio from the admin panel (Profile section) to fill in this section."
           }
         />
+        {profile?.resumeUrl && (
+          <div className="flex flex-wrap gap-3">
+            <Button variant="outline" nativeButton={false} render={<a href="/api/resume" target="_blank" rel="noopener noreferrer" />}>
+              <FileText />
+              View resume
+            </Button>
+            <Button nativeButton={false} render={<a href="/api/resume?download=1" />}>
+              <Download />
+              Download resume
+            </Button>
+          </div>
+        )}
       </section>
     </div>
   );

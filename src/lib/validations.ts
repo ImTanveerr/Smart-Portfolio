@@ -44,9 +44,21 @@ export const profileSchema = z.object({
   linkedinUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   twitterUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   websiteUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  resumeUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  projectsCount: z.coerce
+    .number()
+    .int("Must be a whole number")
+    .min(1, "Must be at least 1")
+    .max(12, "Must be 12 or fewer"),
+  postsCount: z.coerce
+    .number()
+    .int("Must be a whole number")
+    .min(1, "Must be at least 1")
+    .max(12, "Must be 12 or fewer"),
 });
 
 export type ProfileFormValues = z.infer<typeof profileSchema>;
+export type ProfileFormInput = z.input<typeof profileSchema>;
 
 export const SKILL_CATEGORIES = ["FRONTEND", "BACKEND", "DEVOPS", "OTHER"] as const;
 

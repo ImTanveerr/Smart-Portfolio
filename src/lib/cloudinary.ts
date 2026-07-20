@@ -7,9 +7,21 @@ cloudinary.config({
 });
 
 export function uploadImageToCloudinary(buffer: Buffer, folder: string): Promise<string> {
+  return uploadToCloudinary(buffer, folder, "image");
+}
+
+export function uploadRawFileToCloudinary(buffer: Buffer, folder: string): Promise<string> {
+  return uploadToCloudinary(buffer, folder, "raw");
+}
+
+function uploadToCloudinary(
+  buffer: Buffer,
+  folder: string,
+  resourceType: "image" | "raw"
+): Promise<string> {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
-      { folder, resource_type: "image" },
+      { folder, resource_type: resourceType },
       (error, result) => {
         if (error || !result) {
           reject(error ?? new Error("Cloudinary upload failed"));

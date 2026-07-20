@@ -28,6 +28,9 @@ export async function updateProfile(values: ProfileFormValues): Promise<ActionRe
     linkedinUrl: data.linkedinUrl || null,
     twitterUrl: data.twitterUrl || null,
     websiteUrl: data.websiteUrl || null,
+    resumeUrl: data.resumeUrl || null,
+    projectsCount: data.projectsCount,
+    postsCount: data.postsCount,
   };
 
   await prisma.profile.upsert({

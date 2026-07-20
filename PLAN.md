@@ -87,19 +87,22 @@ model Tag {
 }
 
 model Profile {
-  id           String   @id @default("profile")
-  name         String?
-  title        String?
-  description  String?
-  aboutContent String?
-  email        String?
-  phone        String?
-  avatarImage  String?
-  githubUrl    String?
-  linkedinUrl  String?
-  twitterUrl   String?
-  websiteUrl   String?
-  updatedAt    DateTime @updatedAt
+  id            String   @id @default("profile")
+  name          String?
+  title         String?
+  description   String?
+  aboutContent  String?
+  email         String?
+  phone         String?
+  avatarImage   String?
+  githubUrl     String?
+  linkedinUrl   String?
+  twitterUrl    String?
+  websiteUrl    String?
+  resumeUrl     String?
+  projectsCount Int      @default(3)
+  postsCount    Int      @default(3)
+  updatedAt     DateTime @updatedAt
 }
 
 enum SkillCategory {
@@ -126,6 +129,23 @@ page with an inline add form (name + category) and a grouped pill list where eac
 category dropdown (updates immediately) and a remove button, since two fields don't justify a full
 CRUD suite. Seeded with the initial real skill list via `npm run db:seed-skills`
 (`prisma/seed-skills.ts`, upsert-based so it's safe to re-run).
+
+`Profile.projectsCount` / `postsCount` control how many Featured projects / Latest posts show on
+the home page (admin sets these under "Landing page display" in the Profile form, 1–12 each,
+default 3). The home page fetches the profile first, then uses those counts for the `take:` on the
+project/post queries — this makes the two `Promise.all` calls sequential (profile+skills, then
+projects+posts) rather than one combined batch, since the counts depend on the profile result.
+
+`Profile.resumeUrl` is a Cloudinary **raw** (not `image`) upload — a different `resource_type`
+needed for non-image files like PDFs, uploaded via a separate route
+(`POST /api/upload/resume`, PDF-only, 10MB limit) using `uploadRawFileToCloudinary` in
+`src/lib/cloudinary.ts`. Public viewing/downloading goes through `GET /api/resume` (`?download=1`
+for a forced download) — a small proxy route that fetches the file from Cloudinary server-side and
+re-serves it with an explicit `Content-Disposition: inline` or `attachment` header set by our own
+code, rather than relying on Cloudinary's `fl_attachment` URL flag (which is documented for
+images/videos, not confirmed for raw resources) or the HTML `download` attribute (unreliable for
+cross-origin URLs in most browsers). Shown as "View resume" / "Download resume" buttons under the
+About section, on both the home page and `/about`.
 
 `Profile` is a **singleton** — always looked up/upserted by the fixed id `"profile"`
 (`src/lib/profile.ts` exports `PROFILE_ID` and a `getProfile()` helper the admin page and every

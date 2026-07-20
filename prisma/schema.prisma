@@ -51,19 +51,22 @@ model Project {
 }
 
 model Profile {
-  id           String   @id @default("profile")
-  name         String?
-  title        String?
-  description  String?
-  aboutContent String?
-  email        String?
-  phone        String?
-  avatarImage  String?
-  githubUrl    String?
-  linkedinUrl  String?
-  twitterUrl   String?
-  websiteUrl   String?
-  updatedAt    DateTime @updatedAt
+  id            String   @id @default("profile")
+  name          String?
+  title         String?
+  description   String?
+  aboutContent  String?
+  email         String?
+  phone         String?
+  avatarImage   String?
+  githubUrl     String?
+  linkedinUrl   String?
+  twitterUrl    String?
+  websiteUrl    String?
+  resumeUrl     String?
+  projectsCount Int      @default(3)
+  postsCount    Int      @default(3)
+  updatedAt     DateTime @updatedAt
 }
 
 model Tag {
