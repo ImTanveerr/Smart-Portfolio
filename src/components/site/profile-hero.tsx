@@ -135,16 +135,16 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
           {contactLinks.length > 0 && (
             <motion.div
               variants={item}
-              className="flex flex-wrap justify-center gap-1.5 pt-1 md:justify-start"
+              className="flex flex-wrap justify-center gap-2 pt-1 md:justify-start"
             >
               {contactLinks.map((link) => (
                 <Button
                   key={link.label}
                   variant="ghost"
-                  size="icon"
+                  size="icon-lg"
                   nativeButton={false}
                   aria-label={link.label}
-                  className="rounded-full border border-transparent transition-transform hover:border-border hover:-translate-y-0.5"
+                  className="size-10 rounded-full border border-border/60 text-muted-foreground transition-all hover:-translate-y-0.5 hover:border-[var(--accent-a)]/40 hover:bg-muted hover:text-foreground hover:shadow-md hover:shadow-[var(--accent-a)]/10 [&_svg]:size-4"
                   render={
                     <a
                       href={link.href}
