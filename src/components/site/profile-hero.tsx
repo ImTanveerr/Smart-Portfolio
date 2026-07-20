@@ -25,7 +25,7 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
 
   return (
     <section className="relative -mt-12 ml-[calc(50%-50vw)] w-screen overflow-hidden md:-mt-16">
-      <div className="relative h-[30rem] w-full sm:h-[34rem] lg:h-[42rem]">
+      <div className="relative h-[26rem] w-full sm:h-[30rem] lg:h-[36rem]">
         {profile?.avatarImage ? (
           <Image
             src={profile.avatarImage}
@@ -33,7 +33,7 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
             fill
             priority
             sizes="100vw"
-            className="object-cover"
+            className="object-cover object-top"
           />
         ) : (
           <div className="flex size-full items-center justify-center bg-muted">
@@ -47,7 +47,7 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
               initial="hidden"
               animate="visible"
               variants={fadeUp}
-              className="absolute top-6 left-6 max-w-xs rounded-2xl border border-border bg-background/80 px-5 py-4 shadow-lg backdrop-blur-md sm:top-8 sm:left-8"
+              className="absolute bottom-6 left-6 max-w-xs rounded-2xl border border-border bg-background/80 px-5 py-4 shadow-lg backdrop-blur-md sm:bottom-8 sm:left-8"
             >
               <h1 className="text-2xl leading-tight font-bold tracking-tight text-balance sm:text-3xl lg:text-4xl">
                 {name}
