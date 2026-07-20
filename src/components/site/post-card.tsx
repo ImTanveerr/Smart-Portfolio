@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { TagPills } from "@/components/site/tag-pills";
 
 type PostCardData = {
@@ -11,7 +12,7 @@ type PostCardData = {
 
 export function PostCard({ post }: { post: PostCardData }) {
   return (
-    <article className="group space-y-2 border-b border-border py-2 pb-8 transition-colors">
+    <article className="group -mx-4 space-y-2 rounded-xl border-b border-border px-4 py-6 transition-colors last:border-b-0 hover:bg-muted/40">
       {post.publishedAt && (
         <time className="text-sm text-muted-foreground">
           {post.publishedAt.toLocaleDateString(undefined, {
@@ -21,13 +22,14 @@ export function PostCard({ post }: { post: PostCardData }) {
           })}
         </time>
       )}
-      <h2 className="text-xl font-semibold tracking-tight">
+      <h2 className="flex items-center gap-1.5 text-xl font-semibold tracking-tight">
         <Link
           href={`/blog/${post.slug}`}
           className="transition-colors group-hover:text-[var(--accent-a)] dark:group-hover:text-[var(--accent-b)]"
         >
           {post.title}
         </Link>
+        <ArrowUpRight className="size-4 -translate-x-1 text-muted-foreground opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
       </h2>
       {post.excerpt && <p className="text-muted-foreground">{post.excerpt}</p>}
       <TagPills tags={post.tags} basePath="/blog" />

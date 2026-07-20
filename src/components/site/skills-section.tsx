@@ -23,7 +23,7 @@ export function SkillsSection({ skills }: { skills: Skill[] }) {
         return (
           <StaggerItem
             key={category}
-            className="space-y-3 rounded-xl border border-border p-4 transition-colors hover:border-[var(--accent-a)]/30"
+            className="space-y-3 rounded-xl border border-border p-4 transition-all hover:-translate-y-0.5 hover:border-[var(--accent-a)]/30 hover:shadow-md"
           >
             <h3 className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground">
               <Icon className="size-4" strokeWidth={1.75} />

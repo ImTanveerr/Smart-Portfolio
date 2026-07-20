@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Download, FileText, FolderGit2, Newspaper } from "lucide-react";
+import { ArrowRight, Download, FileText, FolderGit2, Newspaper } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getProfile } from "@/lib/profile";
 import { ProjectCard } from "@/components/site/project-card";
@@ -60,9 +60,10 @@ export default async function HomePage() {
             action={
               <Link
                 href="/projects"
-                className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                className="group inline-flex items-center gap-1.5 rounded-full border border-border px-3.5 py-1.5 text-sm text-muted-foreground transition-all hover:border-[var(--accent-a)]/40 hover:text-foreground"
               >
                 View all
+                <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
               </Link>
             }
           />
@@ -92,9 +93,10 @@ export default async function HomePage() {
             action={
               <Link
                 href="/blog"
-                className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                className="group inline-flex items-center gap-1.5 rounded-full border border-border px-3.5 py-1.5 text-sm text-muted-foreground transition-all hover:border-[var(--accent-a)]/40 hover:text-foreground"
               >
                 View all
+                <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
               </Link>
             }
           />
@@ -121,29 +123,31 @@ export default async function HomePage() {
           <SectionHeading eyebrow="Get to know me" title="About" />
         </Reveal>
         <Reveal delay={0.05}>
-          <MarkdownContent
-            content={
-              profile?.aboutContent ||
-              "Add your bio from the admin panel (Profile section) to fill in this section."
-            }
-          />
+          <div className="space-y-5 rounded-2xl border border-border bg-muted/20 p-6 sm:p-8">
+            <MarkdownContent
+              content={
+                profile?.aboutContent ||
+                "Add your bio from the admin panel (Profile section) to fill in this section."
+              }
+            />
+            {profile?.resumeUrl && (
+              <div className="flex flex-wrap gap-3 pt-1">
+                <Button
+                  variant="outline"
+                  nativeButton={false}
+                  render={<a href="/api/resume" target="_blank" rel="noopener noreferrer" />}
+                >
+                  <FileText />
+                  View resume
+                </Button>
+                <Button nativeButton={false} render={<a href="/api/resume?download=1" />}>
+                  <Download />
+                  Download resume
+                </Button>
+              </div>
+            )}
+          </div>
         </Reveal>
-        {profile?.resumeUrl && (
-          <Reveal delay={0.1} className="flex flex-wrap gap-3">
-            <Button
-              variant="outline"
-              nativeButton={false}
-              render={<a href="/api/resume" target="_blank" rel="noopener noreferrer" />}
-            >
-              <FileText />
-              View resume
-            </Button>
-            <Button nativeButton={false} render={<a href="/api/resume?download=1" />}>
-              <Download />
-              Download resume
-            </Button>
-          </Reveal>
-        )}
       </section>
     </div>
   );
