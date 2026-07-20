@@ -19,11 +19,9 @@ import { Button } from "@/components/ui/button";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [profile, skills, totalProjects, totalPosts] = await Promise.all([
+  const [profile, skills] = await Promise.all([
     getProfile(),
     prisma.skill.findMany({ orderBy: { name: "asc" } }),
-    prisma.project.count(),
-    prisma.post.count({ where: { published: true } }),
   ]);
 
   const [featuredProjects, latestPosts] = await Promise.all([
@@ -43,10 +41,7 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-24">
-      <ProfileHero
-        profile={profile}
-        stats={{ projects: totalProjects, posts: totalPosts, skills: skills.length }}
-      />
+      <ProfileHero profile={profile} />
 
       {skills.length > 0 && (
         <section id="skills" className="scroll-mt-24 space-y-6">
