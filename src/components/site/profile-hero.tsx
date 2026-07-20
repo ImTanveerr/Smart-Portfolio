@@ -1,16 +1,51 @@
 "use client";
 
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useReducedMotion, type Variants } from "framer-motion";
-import { ArrowRight, User } from "lucide-react";
+import {
+  animate,
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+  type Variants,
+} from "framer-motion";
+import { ArrowRight, ChevronDown, User } from "lucide-react";
 import type { Profile } from "@/generated/prisma/client";
 import { Button } from "@/components/ui/button";
 import { getSocialLinks } from "@/lib/social-links";
 import { cn } from "@/lib/utils";
 
-export function ProfileHero({ profile }: { profile: Profile | null }) {
+type HeroStats = { projects: number; posts: number; skills: number };
+
+function StatCounter({ value }: { value: number }) {
   const shouldReduceMotion = useReducedMotion();
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    const controls = animate(0, value, {
+      duration: shouldReduceMotion ? 0 : 0.9,
+      ease: [0.21, 0.47, 0.32, 0.98],
+      onUpdate: (v) => setDisplay(Math.round(v)),
+    });
+    return () => controls.stop();
+  }, [value, shouldReduceMotion]);
+
+  return <span>{display}</span>;
+}
+
+export function ProfileHero({
+  profile,
+  stats,
+}: {
+  profile: Profile | null;
+  stats?: HeroStats;
+}) {
+  const shouldReduceMotion = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
   const name = profile?.name || "Hi, I'm a software engineer";
   const title = profile?.title || "I build things and write about how they work.";
   const description =
@@ -18,6 +53,51 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
     "Take a look at what I've shipped, or read what I've learned along the way.";
 
   const contactLinks = getSocialLinks(profile);
+  const statItems = [
+    stats && { label: "Projects", value: stats.projects },
+    stats && { label: "Articles", value: stats.posts },
+    stats && { label: "Skills", value: stats.skills },
+  ].filter((s): s is { label: string; value: number } => Boolean(s) && s!.value > 0);
+
+  // Cursor spotlight — tracked via motion values so the glow follows the
+  // pointer without triggering a React re-render on every mouse move.
+  const spotX = useMotionValue(0);
+  const spotY = useMotionValue(0);
+  const spotlightBackground = useMotionTemplate`radial-gradient(480px circle at ${spotX}px ${spotY}px, color-mix(in oklch, var(--accent-a), transparent 88%), transparent 70%)`;
+
+  // Avatar tilt — same approach, springed for a smooth 3D follow.
+  const tiltX = useMotionValue(0);
+  const tiltY = useMotionValue(0);
+  const rotateX = useSpring(useTransform(tiltY, [-0.5, 0.5], [10, -10]), {
+    stiffness: 200,
+    damping: 20,
+  });
+  const rotateY = useSpring(useTransform(tiltX, [-0.5, 0.5], [-10, 10]), {
+    stiffness: 200,
+    damping: 20,
+  });
+
+  function handleSectionMouseMove(e: MouseEvent<HTMLElement>) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    spotX.set(e.clientX - rect.left);
+    spotY.set(e.clientY - rect.top);
+  }
+
+  function handleAvatarMouseMove(e: MouseEvent<HTMLDivElement>) {
+    if (shouldReduceMotion) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    tiltX.set((e.clientX - rect.left) / rect.width - 0.5);
+    tiltY.set((e.clientY - rect.top) / rect.height - 0.5);
+  }
+
+  function handleAvatarMouseLeave() {
+    tiltX.set(0);
+    tiltY.set(0);
+  }
+
+  function scrollToNext() {
+    sectionRef.current?.nextElementSibling?.scrollIntoView({ behavior: "smooth" });
+  }
 
   const container: Variants = {
     hidden: {},
@@ -37,13 +117,27 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
   };
 
   return (
-    <section className="py-12 sm:py-20">
+    <section
+      ref={sectionRef}
+      onMouseMove={shouldReduceMotion ? undefined : handleSectionMouseMove}
+      className="relative py-12 sm:py-20"
+    >
+      {!shouldReduceMotion && (
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10"
+          style={{ background: spotlightBackground }}
+        />
+      )}
+
       <div className="flex flex-col items-center gap-10 md:flex-row md:items-center md:gap-14">
         <motion.div
           initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
-          className="relative shrink-0"
+          onMouseMove={handleAvatarMouseMove}
+          onMouseLeave={handleAvatarMouseLeave}
+          className="relative shrink-0 [perspective:800px]"
         >
           <div
             aria-hidden
@@ -52,6 +146,7 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
           <motion.div
             animate={shouldReduceMotion ? undefined : { y: [0, -10, 0] }}
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            style={{ rotateX, rotateY }}
             className={cn(
               "relative size-48 overflow-hidden rounded-full sm:size-64",
               "ring-1 ring-border ring-offset-4 ring-offset-background"
@@ -102,6 +197,23 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
           <motion.p variants={item} className="text-lg text-muted-foreground text-pretty">
             {description}
           </motion.p>
+
+          {statItems.length > 0 && (
+            <motion.div
+              variants={item}
+              className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 pt-1 md:justify-start"
+            >
+              {statItems.map((stat) => (
+                <div key={stat.label} className="flex items-baseline gap-1.5">
+                  <span className="text-xl font-semibold tabular-nums">
+                    <StatCounter value={stat.value} />
+                    {stat.value >= 10 ? "+" : ""}
+                  </span>
+                  <span className="text-sm text-muted-foreground">{stat.label}</span>
+                </div>
+              ))}
+            </motion.div>
+          )}
 
           <motion.div
             variants={item}
@@ -154,6 +266,15 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
           )}
         </motion.div>
       </div>
+
+      <button
+        type="button"
+        onClick={scrollToNext}
+        aria-label="Scroll to next section"
+        className="mx-auto mt-10 hidden size-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:text-foreground sm:flex"
+      >
+        <ChevronDown className="size-4 motion-safe:animate-bounce" />
+      </button>
     </section>
   );
 }
