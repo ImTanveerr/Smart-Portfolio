@@ -30,21 +30,38 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
   return (
     <section className="relative -mt-12 ml-[calc(50%-50vw)] w-screen overflow-hidden md:-mt-16">
       <div className="grid md:grid-cols-2">
-        <div className="relative h-72 sm:h-96 md:h-auto md:min-h-[34rem] lg:min-h-[40rem]">
-          {profile?.avatarImage ? (
-            <Image
-              src={profile.avatarImage}
-              alt={profile.name ?? "Profile"}
-              fill
-              priority
-              sizes="(min-width: 768px) 50vw, 100vw"
-              className="object-cover object-top"
+        <div className="flex min-h-[22rem] items-center justify-center py-12 sm:min-h-[26rem] md:min-h-[34rem] lg:min-h-[40rem]">
+          <motion.div
+            initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
+            className="relative"
+          >
+            <div
+              aria-hidden
+              className="absolute inset-0 -z-10 scale-110 rounded-full bg-gradient-to-br from-[var(--accent-a)] to-[var(--accent-b)] opacity-30 blur-2xl"
             />
-          ) : (
-            <div className="flex size-full items-center justify-center bg-muted">
-              <User className="size-24 text-muted-foreground" strokeWidth={1} />
-            </div>
-          )}
+            <motion.div
+              animate={shouldReduceMotion ? undefined : { y: [0, -10, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              className="size-56 sm:size-72 lg:size-80"
+            >
+              {profile?.avatarImage ? (
+                <Image
+                  src={profile.avatarImage}
+                  alt={profile.name ?? "Profile"}
+                  width={320}
+                  height={320}
+                  priority
+                  className="size-56 rounded-full object-cover ring-1 ring-border ring-offset-4 ring-offset-background sm:size-72 lg:size-80"
+                />
+              ) : (
+                <div className="flex size-56 items-center justify-center rounded-full bg-muted ring-1 ring-border ring-offset-4 ring-offset-background sm:size-72 lg:size-80">
+                  <User className="size-20 text-muted-foreground" strokeWidth={1.5} />
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
         </div>
 
         <motion.div
