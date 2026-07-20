@@ -21,28 +21,40 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
   ].filter(Boolean) as { icon: typeof Mail; href: string; label: string }[];
 
   return (
-    <section className="relative -mx-6 overflow-hidden px-6 py-10 sm:py-14">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute top-1/2 right-0 -z-10 size-80 -translate-y-1/2 translate-x-1/4 rounded-full bg-gradient-to-br from-primary/25 via-primary/10 to-transparent blur-3xl sm:size-[28rem]"
-      />
+    <section className="py-12 sm:py-20">
+      <div className="flex flex-col items-center gap-10 md:flex-row md:items-center md:gap-14">
+        <div className="shrink-0">
+          {profile?.avatarImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={profile.avatarImage}
+              alt={profile.name ?? "Profile"}
+              className={cn(
+                "size-36 rounded-full object-cover sm:size-44",
+                "ring-1 ring-border"
+              )}
+            />
+          ) : (
+            <div
+              className={cn(
+                "flex size-36 items-center justify-center rounded-full bg-muted sm:size-44",
+                "ring-1 ring-border"
+              )}
+            >
+              <User className="size-12 text-muted-foreground" strokeWidth={1.5} />
+            </div>
+          )}
+        </div>
 
-      <div className="grid items-center gap-10 md:grid-cols-[1fr_auto]">
-        <div className="max-w-2xl animate-in fade-in slide-in-from-bottom-4 space-y-6 duration-700">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-3 py-1 text-sm font-medium text-muted-foreground">
-            <span className="relative flex size-2">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary/60" />
-              <span className="relative inline-flex size-2 rounded-full bg-primary" />
-            </span>
-            {greeting}
-          </div>
+        <div className="max-w-xl space-y-6 text-center md:text-left">
+          <p className="text-sm font-medium text-muted-foreground">{greeting}</p>
 
-          <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
+          <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
             {heading}
           </h1>
-          <p className="max-w-xl text-lg text-muted-foreground text-pretty">{description}</p>
+          <p className="text-lg text-muted-foreground text-pretty">{description}</p>
 
-          <div className="flex flex-wrap items-center gap-3 pt-2">
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2 md:justify-start">
             <Button size="lg" nativeButton={false} render={<Link href="/projects" />}>
               View projects
               <ArrowRight />
@@ -58,7 +70,7 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
           </div>
 
           {contactLinks.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 pt-1">
+            <div className="flex flex-wrap justify-center gap-1.5 pt-1 md:justify-start">
               {contactLinks.map((link) => (
                 <Button
                   key={link.label}
@@ -78,33 +90,6 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
                   <link.icon />
                 </Button>
               ))}
-            </div>
-          )}
-        </div>
-
-        <div className="relative mx-auto shrink-0 animate-in fade-in zoom-in-95 duration-700">
-          <div
-            aria-hidden
-            className="absolute inset-0 -z-10 rounded-full bg-gradient-to-br from-primary/40 to-primary/0 blur-2xl"
-          />
-          {profile?.avatarImage ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={profile.avatarImage}
-              alt={profile.name ?? "Profile"}
-              className={cn(
-                "size-32 rounded-full object-cover sm:size-40",
-                "ring-4 ring-background shadow-xl"
-              )}
-            />
-          ) : (
-            <div
-              className={cn(
-                "flex size-32 items-center justify-center rounded-full bg-muted sm:size-40",
-                "ring-4 ring-background shadow-xl"
-              )}
-            >
-              <User className="size-12 text-muted-foreground" strokeWidth={1.5} />
             </div>
           )}
         </div>
