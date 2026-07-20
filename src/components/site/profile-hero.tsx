@@ -35,85 +35,78 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
   };
   const nameContainer: Variants = {
     hidden: {},
-    visible: { transition: { staggerChildren: 0.07 } },
+    visible: { transition: { staggerChildren: 0.06 } },
   };
   const nameWord: Variants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.21, 0.47, 0.32, 0.98] } },
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 28 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.21, 0.47, 0.32, 0.98] } },
   };
 
   return (
-    <section ref={sectionRef} className="py-12 sm:py-20">
-      <div className="flex flex-col items-center gap-10 md:flex-row md:items-center md:gap-14">
-        <motion.div
-          initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
-          className="relative shrink-0"
-        >
-          <div
-            aria-hidden
-            className="absolute inset-0 -z-10 scale-110 rounded-full bg-gradient-to-br from-[var(--accent-a)] to-[var(--accent-b)] opacity-30 blur-2xl"
-          />
-          <motion.div
-            animate={shouldReduceMotion ? undefined : { y: [0, -10, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className={cn(
-              "relative size-56 overflow-hidden rounded-full sm:size-72",
-              "ring-1 ring-border ring-offset-4 ring-offset-background"
-            )}
-          >
-            {profile?.avatarImage ? (
-              <Image
-                src={profile.avatarImage}
-                alt={profile.name ?? "Profile"}
-                fill
-                priority
-                sizes="(min-width: 640px) 18rem, 14rem"
-                className="object-cover"
-              />
-            ) : (
-              <div className="flex size-full items-center justify-center bg-muted">
-                <User className="size-20 text-muted-foreground" strokeWidth={1.5} />
-              </div>
-            )}
-          </motion.div>
-        </motion.div>
+    <section ref={sectionRef} className="relative overflow-hidden py-16 sm:py-24">
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -top-10 right-0 -z-10 -mr-6 hidden font-mono text-[16rem] leading-none font-bold text-foreground/[0.035] select-none sm:block lg:text-[22rem]"
+      >
+        {"</>"}
+      </span>
 
+      <div className="flex flex-col-reverse items-start gap-12 lg:flex-row lg:items-center lg:justify-between lg:gap-16">
         <motion.div
           initial="hidden"
           animate="visible"
           variants={container}
-          className="max-w-xl space-y-5 text-center md:text-left"
+          className="max-w-2xl space-y-6 text-left"
         >
-          <div className="space-y-3">
-            <motion.span
-              variants={item}
-              className="inline-flex items-center gap-1 font-mono text-sm text-[var(--accent-a)] dark:text-[var(--accent-b)]"
-            >
-              <span className="text-muted-foreground">{"<"}</span>
-              {title}
-              <span className="text-muted-foreground">{"/>"}</span>
-            </motion.span>
-            <motion.h1
-              variants={nameContainer}
-              className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-5xl font-semibold tracking-tight sm:text-6xl md:justify-start"
-            >
-              {name.split(" ").map((word, i) => (
-                <motion.span key={i} variants={nameWord} className="inline-block">
-                  {word}
-                </motion.span>
-              ))}
-            </motion.h1>
-          </div>
-          <motion.p variants={item} className="text-lg text-muted-foreground text-pretty">
+          <motion.span
+            variants={item}
+            className="inline-flex items-center gap-1 font-mono text-sm text-[var(--accent-a)] dark:text-[var(--accent-b)]"
+          >
+            <span className="text-muted-foreground">{"<"}</span>
+            {title}
+            <span className="text-muted-foreground">{"/>"}</span>
+          </motion.span>
+
+          <motion.h1
+            variants={nameContainer}
+            className="flex flex-wrap gap-x-4 gap-y-1 text-6xl leading-[1.05] font-bold tracking-tight sm:text-7xl lg:text-8xl"
+          >
+            {name.split(" ").map((word, i) => (
+              <motion.span key={i} variants={nameWord} className="inline-block">
+                {word}
+              </motion.span>
+            ))}
+          </motion.h1>
+
+          <motion.p
+            variants={item}
+            className="max-w-xl text-lg text-muted-foreground text-pretty sm:text-xl"
+          >
             {description}
           </motion.p>
 
-          <motion.div
-            variants={item}
-            className="flex flex-wrap items-center justify-center gap-3 pt-2 md:justify-start"
-          >
+          {(profile?.email || profile?.phone) && (
+            <motion.div
+              variants={item}
+              className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-sm text-muted-foreground"
+            >
+              {profile?.email && (
+                <a href={`mailto:${profile.email}`} className="transition-colors hover:text-foreground">
+                  {profile.email}
+                </a>
+              )}
+              {profile?.email && profile?.phone && (
+                <span className="text-border">/</span>
+              )}
+              {profile?.phone && (
+                <a href={`tel:${profile.phone}`} className="transition-colors hover:text-foreground">
+                  {profile.phone}
+                </a>
+              )}
+            </motion.div>
+          )}
+
+          <motion.div variants={item} className="flex flex-wrap items-center gap-3 pt-2">
             <Button
               size="lg"
               nativeButton={false}
@@ -123,21 +116,13 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
               View projects
               <ArrowRight className="transition-transform group-hover:translate-x-0.5" />
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              nativeButton={false}
-              render={<Link href="/blog" />}
-            >
+            <Button size="lg" variant="outline" nativeButton={false} render={<Link href="/blog" />}>
               Read the blog
             </Button>
           </motion.div>
 
           {contactLinks.length > 0 && (
-            <motion.div
-              variants={item}
-              className="flex flex-wrap justify-center gap-2 pt-1 md:justify-start"
-            >
+            <motion.div variants={item} className="flex flex-wrap items-center gap-2 pt-1">
               {contactLinks.map((link) => (
                 <Button
                   key={link.label}
@@ -160,13 +145,60 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
             </motion.div>
           )}
         </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.94 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
+          className="relative w-64 shrink-0 self-center sm:w-80 lg:w-96 lg:self-auto"
+        >
+          <span
+            aria-hidden
+            className="absolute -top-3 -left-3 z-10 font-mono text-3xl text-[var(--accent-a)] select-none"
+          >
+            {"{"}
+          </span>
+          <span
+            aria-hidden
+            className="absolute -right-3 -bottom-3 z-10 font-mono text-3xl text-[var(--accent-b)] select-none"
+          >
+            {"}"}
+          </span>
+          <div
+            aria-hidden
+            className="absolute inset-0 -z-10 translate-x-3 translate-y-3 rounded-3xl bg-gradient-to-br from-[var(--accent-a)] to-[var(--accent-b)] opacity-20 blur-xl"
+          />
+          <motion.div
+            animate={shouldReduceMotion ? undefined : { y: [0, -10, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className={cn(
+              "relative aspect-[4/5] overflow-hidden rounded-3xl",
+              "ring-1 ring-border"
+            )}
+          >
+            {profile?.avatarImage ? (
+              <Image
+                src={profile.avatarImage}
+                alt={profile.name ?? "Profile"}
+                fill
+                priority
+                sizes="(min-width: 1024px) 24rem, (min-width: 640px) 20rem, 16rem"
+                className="object-cover"
+              />
+            ) : (
+              <div className="flex size-full items-center justify-center bg-muted">
+                <User className="size-20 text-muted-foreground" strokeWidth={1.5} />
+              </div>
+            )}
+          </motion.div>
+        </motion.div>
       </div>
 
       <button
         type="button"
         onClick={scrollToNext}
         aria-label="Scroll to next section"
-        className="group mx-auto mt-12 hidden flex-col items-center gap-2 sm:flex"
+        className="group mt-16 hidden flex-col items-start gap-2 sm:flex"
       >
         <span className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground transition-colors group-hover:text-foreground">
           SCROLL
