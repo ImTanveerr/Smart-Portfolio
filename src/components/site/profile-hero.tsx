@@ -39,8 +39,17 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
   const activeImage = useCyclingImage(images);
 
   const container: Variants = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+    hidden: { opacity: 0, x: shouldReduceMotion ? 0 : 80 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 0.7,
+        ease: [0.21, 0.47, 0.32, 0.98],
+        staggerChildren: 0.1,
+        delayChildren: 0.05,
+      },
+    },
   };
   const item: Variants = {
     hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 16 },
@@ -58,26 +67,27 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
       </div>
 
       <div className="grid md:grid-cols-2">
-        <div className="flex min-h-[22rem] items-center justify-center py-12 sm:min-h-[26rem] md:min-h-[34rem] lg:min-h-[40rem]">
+        <div className="flex min-h-[22rem] items-center justify-center py-12 sm:min-h-[26rem] md:min-h-[34rem] md:justify-end md:pr-6 lg:min-h-[40rem] lg:pr-10">
           <motion.div
-            initial={{ opacity: 0, scale: shouldReduceMotion ? 1 : 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
+            initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -80 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] }}
           >
             <motion.div
               animate={shouldReduceMotion ? undefined : { y: [0, -10, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="relative size-56 overflow-hidden rounded-full ring-1 ring-border ring-offset-4 ring-offset-background sm:size-72 lg:size-80"
+              className="relative size-56 overflow-hidden rounded-full ring-1 ring-border ring-offset-4 ring-offset-background [perspective:1200px] sm:size-72 lg:size-80"
             >
               {activeImage ? (
                 <AnimatePresence mode="sync">
                   <motion.div
                     key={activeImage}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                    initial={{ rotateY: 90, opacity: 0 }}
+                    animate={{ rotateY: 0, opacity: 1 }}
+                    exit={{ rotateY: -90, opacity: 0 }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
                     className="absolute inset-0"
+                    style={{ backfaceVisibility: "hidden" }}
                   >
                     <Image
                       src={activeImage}
@@ -102,7 +112,7 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
           initial="hidden"
           animate="visible"
           variants={container}
-          className="flex flex-col justify-center gap-5 px-6 py-12 sm:px-10 md:min-h-[34rem] lg:min-h-[40rem] lg:px-16"
+          className="flex flex-col justify-center gap-5 px-6 py-12 sm:px-8 md:min-h-[34rem] md:pl-6 lg:min-h-[40rem] lg:pl-10"
         >
           <motion.h1
             variants={item}
