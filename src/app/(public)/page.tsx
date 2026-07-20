@@ -41,7 +41,7 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-24">
-      <ProfileHero profile={profile} />
+      <ProfileHero profile={profile} skills={skills.map((skill) => skill.name)} />
 
       {skills.length > 0 && (
         <section id="skills" className="scroll-mt-24 space-y-6">

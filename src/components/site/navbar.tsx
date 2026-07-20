@@ -26,7 +26,7 @@ function getInitials(name?: string | null) {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-export function Navbar({ name }: { name?: string | null }) {
+export function Navbar({ name, email }: { name?: string | null; email?: string | null }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const activeSection = useActiveSection(isHome ? sectionIds : []);
@@ -82,8 +82,18 @@ export function Navbar({ name }: { name?: string | null }) {
               </Link>
             );
           })}
-          <div className="ml-1 border-l border-border pl-2">
+          <div className="ml-1 flex items-center gap-2 border-l border-border pl-2">
             <ThemeToggle />
+            {email && (
+              <Button
+                size="sm"
+                nativeButton={false}
+                render={<a href={`mailto:${email}`} />}
+                className="rounded-full bg-gradient-to-r from-[var(--accent-a)] to-[var(--accent-b)] text-white hover:opacity-90"
+              >
+                Let&apos;s Talk
+              </Button>
+            )}
           </div>
         </nav>
 
@@ -123,6 +133,17 @@ export function Navbar({ name }: { name?: string | null }) {
                   {link.label}
                 </Link>
               ))}
+              {email && (
+                <Button
+                  size="sm"
+                  nativeButton={false}
+                  onClick={() => setMobileOpen(false)}
+                  render={<a href={`mailto:${email}`} />}
+                  className="mt-1 rounded-full bg-gradient-to-r from-[var(--accent-a)] to-[var(--accent-b)] text-white hover:opacity-90"
+                >
+                  Let&apos;s Talk
+                </Button>
+              )}
             </div>
           </motion.nav>
         )}
