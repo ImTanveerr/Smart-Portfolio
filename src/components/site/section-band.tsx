@@ -25,12 +25,29 @@ export function SectionBand({
     // while the content inside is re-centered to the normal page width.
     <div
       className={cn(
-        "ml-[calc(50%-50vw)] w-screen",
+        "relative ml-[calc(50%-50vw)] w-screen overflow-hidden",
         tinted && "bg-muted/30",
         last && "-mb-12 md:-mb-16"
       )}
     >
-      <div className={cn("mx-auto max-w-5xl px-6 py-16 sm:py-20", className)}>{children}</div>
+      {/* Same accent-glow language as the hero, but a different composition
+          on purpose - one soft corner blob instead of two centered ones -
+          so sections read as related to the hero without just repeating it.
+          Corner and color alternate with `tinted`, which already alternates
+          section by section, so adjacent sections don't glow identically. */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div
+          className={cn(
+            "absolute size-[26rem] rounded-full blur-3xl",
+            tinted
+              ? "top-[-12%] right-[-10%] bg-[radial-gradient(closest-side,var(--accent-b),transparent)] opacity-[0.14] dark:opacity-[0.2]"
+              : "bottom-[-16%] left-[-10%] bg-[radial-gradient(closest-side,var(--accent-a),transparent)] opacity-[0.12] dark:opacity-[0.18]"
+          )}
+        />
+      </div>
+      <div className={cn("relative mx-auto max-w-5xl px-6 py-16 sm:py-20", className)}>
+        {children}
+      </div>
     </div>
   );
 }

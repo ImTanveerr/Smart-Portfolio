@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion, type Variants } from "framer-motion";
-import { ArrowRight, User } from "lucide-react";
+import { ArrowRight, Bot, User } from "lucide-react";
 import type { Profile } from "@/generated/prisma/client";
 import { Button } from "@/components/ui/button";
 import { getSocialLinks } from "@/lib/social-links";
@@ -150,10 +150,40 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
               <p className="text-muted-foreground">
                 <span className="text-[var(--accent-a)]">$</span> whoami
               </p>
-              <p className="text-foreground">
-                {title}
-                <span className="ml-0.5 inline-block h-4 w-[2px] translate-y-0.5 animate-pulse bg-[var(--accent-a)]" />
-              </p>
+              <div className="relative w-fit">
+                <p className="text-foreground">
+                  {title}
+                  <span className="ml-0.5 inline-block h-4 w-[2px] translate-y-0.5 animate-pulse bg-[var(--accent-a)]" />
+                </p>
+                {/* A tiny bot that wanders along the title's baseline, then
+                    fades out/teleports back to the start rather than walking
+                    backward - a small, low-stakes bit of charm rather than a
+                    serious UI element, so it's skipped under reduced motion. */}
+                {!shouldReduceMotion && (
+                  <motion.div
+                    aria-hidden
+                    className="pointer-events-none absolute -bottom-1 flex size-4 items-center justify-center rounded-full bg-gradient-to-br from-[var(--accent-a)] to-[var(--accent-b)] text-white shadow-md"
+                    animate={{
+                      left: ["0%", "85%", "85%", "0%", "0%"],
+                      opacity: [1, 1, 0, 0, 1],
+                    }}
+                    transition={{
+                      duration: 6,
+                      times: [0, 0.8, 0.85, 0.9, 1],
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  >
+                    <motion.span
+                      animate={{ y: [0, -2, 0] }}
+                      transition={{ duration: 0.45, repeat: Infinity, ease: "easeInOut" }}
+                      className="flex items-center justify-center"
+                    >
+                      <Bot className="size-2.5" strokeWidth={2.5} />
+                    </motion.span>
+                  </motion.div>
+                )}
+              </div>
             </div>
           </motion.div>
 
