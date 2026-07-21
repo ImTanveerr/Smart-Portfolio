@@ -92,3 +92,44 @@ model Skill {
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 }
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum TaskRecurrence {
+  NONE
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+// Backs both the admin todo list and the admin calendar - they're the same
+// underlying tasks, just two views of them. The todo list shows everything,
+// smart-sorted by urgency; the calendar shows only tasks that have a
+// dueDate, grouped by day. Giving a todo a due date is what puts it on the
+// calendar, rather than these being two separate item types.
+//
+// Recurring tasks are materialized as individual rows sharing a `seriesId`
+// (see src/lib/recurrence.ts) rather than computed on the fly, so each
+// occurrence can be completed, edited, or deleted independently.
+model Task {
+  id         String         @id @default(cuid())
+  title      String
+  notes      String?
+  done       Boolean        @default(false)
+  priority   TaskPriority   @default(MEDIUM)
+  dueDate    DateTime?
+  startTime  String? // "HH:mm", 24h
+  endTime    String? // "HH:mm", 24h
+  recurrence TaskRecurrence @default(NONE)
+  seriesId   String?
+  tags       String[]       @default([])
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@index([dueDate])
+  @@index([seriesId])
+}

@@ -81,3 +81,58 @@ export const skillSchema = z.object({
 });
 
 export type SkillFormValues = z.infer<typeof skillSchema>;
+
+export const TASK_PRIORITIES = ["LOW", "MEDIUM", "HIGH"] as const;
+
+export const TASK_PRIORITY_LABELS: Record<(typeof TASK_PRIORITIES)[number], string> = {
+  LOW: "Low",
+  MEDIUM: "Medium",
+  HIGH: "High",
+};
+
+export const TASK_RECURRENCES = ["NONE", "DAILY", "WEEKLY", "MONTHLY"] as const;
+
+export const TASK_RECURRENCE_LABELS: Record<(typeof TASK_RECURRENCES)[number], string> = {
+  NONE: "Doesn't repeat",
+  DAILY: "Daily",
+  WEEKLY: "Weekly",
+  MONTHLY: "Monthly",
+};
+
+const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
+const timeField = z
+  .string()
+  .regex(TIME_RE, "Use 24h HH:mm")
+  .optional()
+  .or(z.literal(""));
+
+// `dueDate` is a plain "yyyy-mm-dd" string (what an <input type="date">
+// holds, and what the quick-add parser produces). Left empty, the task has
+// no deadline; set, it also appears on the admin calendar for that day. See
+// src/lib/date.ts for the day-key helpers. `startTime`/`endTime` are plain
+// "HH:mm" 24h strings - see src/lib/time.ts.
+export const taskSchema = z
+  .object({
+    title: z.string().min(1, "Title is required").max(200),
+    notes: z.string().max(2000).optional().or(z.literal("")),
+    dueDate: z.string().optional().or(z.literal("")),
+    priority: z.enum(TASK_PRIORITIES),
+    tags: z.array(z.string().min(1).max(30)).max(10),
+    startTime: timeField,
+    endTime: timeField,
+    recurrence: z.enum(TASK_RECURRENCES),
+  })
+  .refine((data) => data.recurrence === "NONE" || Boolean(data.dueDate), {
+    message: "A repeating task needs a due date to start from",
+    path: ["dueDate"],
+  })
+  .refine((data) => Boolean(data.startTime) || !data.endTime, {
+    message: "Add a start time first",
+    path: ["startTime"],
+  })
+  .refine((data) => !data.startTime || !data.endTime || data.endTime > data.startTime, {
+    message: "End time must be after the start time",
+    path: ["endTime"],
+  });
+
+export type TaskFormValues = z.infer<typeof taskSchema>;
