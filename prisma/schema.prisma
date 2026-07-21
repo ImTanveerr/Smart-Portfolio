@@ -133,3 +133,19 @@ model Task {
   @@index([dueDate])
   @@index([seriesId])
 }
+
+// A project inquiry submitted through the public /contact page. Writable by
+// anonymous visitors (no requireAdmin() on the action that creates these),
+// which is what makes this model different from everything else here.
+model ContactMessage {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  projectType String?
+  budget      String?
+  message     String
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([read])
+}

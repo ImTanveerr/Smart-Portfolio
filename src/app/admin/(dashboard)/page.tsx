@@ -3,6 +3,7 @@ import {
   CheckCircle2,
   FolderKanban,
   ListTodo,
+  Mail,
   Newspaper,
   Plus,
   Sparkles,
@@ -20,7 +21,7 @@ export default async function AdminDashboardPage() {
   const todayEnd = new Date(todayKey);
   todayEnd.setHours(23, 59, 59, 999);
 
-  const [projectCount, postCount, publishedCount, skillCount, focusTaskCount, profile] =
+  const [projectCount, postCount, publishedCount, skillCount, focusTaskCount, unreadCount, profile] =
     await Promise.all([
       prisma.project.count(),
       prisma.post.count(),
@@ -31,10 +32,12 @@ export default async function AdminDashboardPage() {
       prisma.task.count({
         where: { done: false, OR: [{ dueDate: null }, { dueDate: { lte: todayEnd } }] },
       }),
+      prisma.contactMessage.count({ where: { read: false } }),
       getProfile(),
     ]);
 
   const stats = [
+    { href: "/admin/messages", label: "New messages", value: unreadCount, icon: Mail },
     { href: "/admin/projects", label: "Projects", value: projectCount, icon: FolderKanban },
     { href: "/admin/posts", label: "Blog posts", value: postCount, icon: Newspaper },
     { href: "/admin/posts", label: "Published", value: publishedCount, icon: CheckCircle2 },
@@ -55,7 +58,7 @@ export default async function AdminDashboardPage() {
         description="Overview of your site content and tasks."
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
         {stats.map((stat) => (
           <Link key={stat.label} href={stat.href}>
             <Card className="transition-colors hover:bg-muted/40">

@@ -136,3 +136,25 @@ export const taskSchema = z
   });
 
 export type TaskFormValues = z.infer<typeof taskSchema>;
+
+export const PROJECT_TYPES = ["Website", "Web app", "Mobile app", "Other"] as const;
+export const BUDGET_RANGES = ["< $1,000", "$1,000 - $5,000", "$5,000 - $10,000", "$10,000+", "Not sure yet"] as const;
+
+// Submitted from the public /contact page by anonymous visitors - the only
+// form on the site that isn't behind admin auth. `website` is a honeypot: a
+// field hidden from real visitors via CSS that only a bot's form-filler
+// would populate, checked (and silently rejected) in the server action.
+export const contactMessageSchema = z.object({
+  name: z.string().min(1, "Name is required").max(100),
+  email: z.email("Must be a valid email"),
+  projectType: z.string().max(50).optional().or(z.literal("")),
+  budget: z.string().max(50).optional().or(z.literal("")),
+  message: z.string().min(1, "Tell me a bit about your project").max(5000),
+  // Deliberately permissive (no max(0)/empty-only constraint): a filled-in
+  // value needs to pass validation and reach the action's own check, which
+  // silently drops it - if this field rejected it here instead, the bot
+  // would see a validation error and learn something's checking it.
+  website: z.string().max(200).optional().or(z.literal("")),
+});
+
+export type ContactMessageFormValues = z.infer<typeof contactMessageSchema>;

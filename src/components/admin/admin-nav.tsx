@@ -8,23 +8,26 @@ import {
   FolderKanban,
   LayoutDashboard,
   ListTodo,
+  Mail,
   Newspaper,
   Sparkles,
   UserRound,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/projects", label: "Projects", icon: FolderKanban },
   { href: "/admin/posts", label: "Posts", icon: Newspaper },
+  { href: "/admin/messages", label: "Messages", icon: Mail },
   { href: "/admin/todos", label: "Todo", icon: ListTodo },
   { href: "/admin/calendar", label: "Calendar", icon: CalendarDays },
   { href: "/admin/skills", label: "Skills", icon: Sparkles },
   { href: "/admin/profile", label: "Profile", icon: UserRound },
 ];
 
-export function AdminNav() {
+export function AdminNav({ unreadMessageCount = 0 }: { unreadMessageCount?: number }) {
   const pathname = usePathname();
 
   return (
@@ -52,6 +55,11 @@ export function AdminNav() {
             )}
             <link.icon className="relative size-4" />
             <span className="relative hidden sm:inline">{link.label}</span>
+            {link.href === "/admin/messages" && unreadMessageCount > 0 && (
+              <Badge className="relative h-4 min-w-4 justify-center rounded-full px-1 text-[10px]">
+                {unreadMessageCount}
+              </Badge>
+            )}
           </Link>
         );
       })}
