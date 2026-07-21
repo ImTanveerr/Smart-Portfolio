@@ -1,17 +1,16 @@
 import { getProfile } from "@/lib/profile";
 import { ProfileForm } from "@/components/admin/profile-form";
+import { AdminPageHeader } from "@/components/admin/page-header";
 
 export default async function AdminProfilePage() {
   const profile = await getProfile();
 
   return (
     <div className="space-y-6">
-      <div className="space-y-1">
-        <h1 className="text-2xl font-semibold">Profile</h1>
-        <p className="text-muted-foreground">
-          Shown in the hero section and the About section on the home page.
-        </p>
-      </div>
+      <AdminPageHeader
+        title="Profile"
+        description="Shown in the hero section and the About section on the home page."
+      />
       <ProfileForm
         defaultValues={{
           name: profile?.name ?? "",

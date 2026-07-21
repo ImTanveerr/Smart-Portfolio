@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { AdminNav } from "@/components/admin/admin-nav";
 import { SignOutButton } from "./sign-out-button";
 
 export default async function AdminDashboardLayout({
@@ -15,31 +16,25 @@ export default async function AdminDashboardLayout({
 
   return (
     <div className="min-h-screen">
-      <header className="flex items-center justify-between border-b border-border px-6 py-4">
-        <nav className="flex items-center gap-6">
-          <Link href="/admin" className="font-semibold">
-            Admin
-          </Link>
-          <Link href="/admin/projects" className="text-sm">
-            Projects
-          </Link>
-          <Link href="/admin/posts" className="text-sm">
-            Blog posts
-          </Link>
-          <Link href="/admin/profile" className="text-sm">
-            Profile
-          </Link>
-          <Link href="/admin/skills" className="text-sm">
-            Skills
-          </Link>
-        </nav>
-        <div className="flex items-center gap-4 text-sm">
-          <span className="text-muted-foreground">{session.user?.email}</span>
-          <ThemeToggle />
-          <SignOutButton />
+      <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-sm">
+        <div className="flex h-14 flex-wrap items-center justify-between gap-3 px-4 sm:px-6">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+            <Link href="/admin" className="flex shrink-0 items-center gap-2 font-semibold">
+              <span className="flex size-7 items-center justify-center rounded-full bg-gradient-to-br from-[var(--accent-a)] to-[var(--accent-b)] text-xs text-white">
+                A
+              </span>
+              <span className="hidden sm:inline">Admin</span>
+            </Link>
+            <AdminNav />
+          </div>
+          <div className="flex items-center gap-3 text-sm">
+            <span className="hidden text-muted-foreground md:inline">{session.user?.email}</span>
+            <ThemeToggle />
+            <SignOutButton />
+          </div>
         </div>
       </header>
-      <main className="p-6">{children}</main>
+      <main className="p-4 sm:p-6">{children}</main>
     </div>
   );
 }

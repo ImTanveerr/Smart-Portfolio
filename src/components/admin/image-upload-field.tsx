@@ -52,11 +52,12 @@ export function ImageUploadField({
 
   return (
     <div className="space-y-2">
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <Input
           value={value}
           onChange={(event) => onChange(event.target.value)}
           placeholder="https://... or upload a file"
+          className="min-w-0 flex-1"
         />
         <input
           ref={fileInputRef}
@@ -77,12 +78,13 @@ export function ImageUploadField({
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}
       {value && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={value}
-          alt="Cover preview"
-          className="h-32 w-full rounded-lg border border-border object-cover"
-        />
+        // `object-contain` on a neutral background (rather than `object-cover`,
+        // which cropped whichever part of the image didn't fit the box) so the
+        // whole image is always visible, regardless of its aspect ratio.
+        <div className="flex h-40 w-full items-center justify-center overflow-hidden rounded-lg border border-border bg-muted">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={value} alt="Preview" className="size-full object-contain" />
+        </div>
       )}
     </div>
   );

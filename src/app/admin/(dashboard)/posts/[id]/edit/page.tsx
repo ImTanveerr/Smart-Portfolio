@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { PostForm } from "@/components/admin/post-form";
+import { AdminPageHeader } from "@/components/admin/page-header";
 
 export default async function EditPostPage({
   params,
@@ -18,7 +19,7 @@ export default async function EditPostPage({
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Edit post</h1>
+      <AdminPageHeader title="Edit post" description={post.title} />
       <PostForm
         postId={post.id}
         defaultValues={{

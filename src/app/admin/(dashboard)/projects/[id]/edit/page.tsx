@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ProjectForm } from "@/components/admin/project-form";
+import { AdminPageHeader } from "@/components/admin/page-header";
 
 export default async function EditProjectPage({
   params,
@@ -18,7 +19,7 @@ export default async function EditProjectPage({
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Edit project</h1>
+      <AdminPageHeader title="Edit project" description={project.title} />
       <ProjectForm
         projectId={project.id}
         defaultValues={{
