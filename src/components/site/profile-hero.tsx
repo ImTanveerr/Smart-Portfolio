@@ -73,7 +73,7 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
       </div>
 
       <div className="grid md:grid-cols-2">
-        <div className="flex min-h-[22rem] items-center justify-center py-12 sm:min-h-[26rem] md:min-h-[34rem] md:justify-end md:pr-6 lg:min-h-[40rem] lg:pr-10">
+        <div className="flex min-h-[22rem] items-center justify-center py-12 sm:min-h-[26rem] md:min-h-[34rem] md:justify-end md:pr-16 lg:min-h-[40rem] lg:pr-24">
           <motion.div
             initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -80 }}
             animate={{ opacity: 1, x: 0 }}
@@ -125,7 +125,7 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
           initial="hidden"
           animate="visible"
           variants={container}
-          className="flex flex-col justify-center gap-5 px-6 py-12 sm:px-8 md:min-h-[34rem] md:pl-6 lg:min-h-[40rem] lg:pl-10"
+          className="flex flex-col justify-center gap-5 px-6 py-12 sm:px-8 md:min-h-[34rem] md:pl-16 lg:min-h-[40rem] lg:pl-24"
         >
           <motion.h1
             variants={item}
@@ -134,13 +134,28 @@ export function ProfileHero({ profile }: { profile: Profile | null }) {
             {name}
           </motion.h1>
 
-          <motion.span
+          {/* A little dev-portfolio cliché done deliberately: a fake
+              terminal window standing in for the usual title pill. */}
+          <motion.div
             variants={item}
-            className="inline-flex w-fit items-center gap-2 rounded-full border border-border bg-muted/50 px-3.5 py-1.5 text-sm font-medium text-muted-foreground"
+            className="w-fit overflow-hidden rounded-lg border border-border bg-muted/30 font-mono text-sm shadow-sm backdrop-blur-sm"
           >
-            <span className="size-1.5 shrink-0 rounded-full bg-gradient-to-br from-[var(--accent-a)] to-[var(--accent-b)]" />
-            {title}
-          </motion.span>
+            <div className="flex items-center gap-1.5 border-b border-border/70 bg-muted/50 px-3 py-2">
+              <span className="size-2.5 rounded-full bg-red-400/80" />
+              <span className="size-2.5 rounded-full bg-amber-400/80" />
+              <span className="size-2.5 rounded-full bg-emerald-400/80" />
+              <span className="ml-2 text-xs text-muted-foreground">whoami.sh</span>
+            </div>
+            <div className="px-4 py-3">
+              <p className="text-muted-foreground">
+                <span className="text-[var(--accent-a)]">$</span> whoami
+              </p>
+              <p className="text-foreground">
+                {title}
+                <span className="ml-0.5 inline-block h-4 w-[2px] translate-y-0.5 animate-pulse bg-[var(--accent-a)]" />
+              </p>
+            </div>
+          </motion.div>
 
           <motion.p variants={item} className="max-w-md text-lg text-muted-foreground text-pretty">
             {description}

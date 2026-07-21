@@ -16,8 +16,9 @@ export function SectionHeading({
     <div className={cn("flex flex-wrap items-end justify-between gap-x-4 gap-y-2", className)}>
       <div className="space-y-2">
         {eyebrow && (
-          <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">
-            {eyebrow}
+          <p className="flex items-center gap-1.5 font-mono text-xs text-muted-foreground">
+            <span className="text-[var(--accent-a)]">{"//"}</span>
+            {eyebrow.toLowerCase()}
           </p>
         )}
         <div className="space-y-1.5">

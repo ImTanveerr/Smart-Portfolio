@@ -39,7 +39,7 @@ export function ProjectCard({ project }: { project: ProjectCardData }) {
           {project.techStack.length > 0 && (
             <div className="flex flex-wrap gap-1.5 pt-1">
               {project.techStack.map((tag) => (
-                <Badge key={tag.slug} variant="secondary">
+                <Badge key={tag.slug} variant="secondary" className="font-mono">
                   {tag.name}
                 </Badge>
               ))}

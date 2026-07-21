@@ -59,7 +59,7 @@ export function Navbar({ name, email }: { name?: string | null; email?: string |
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-1 text-sm md:flex">
+        <nav className="hidden items-center gap-1 font-mono text-xs md:flex">
           {links.map((link) => {
             const isActive = isHome && activeSection === link.id;
             return (
@@ -129,7 +129,7 @@ export function Navbar({ name, email }: { name?: string | null; email?: string |
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
-                    "rounded-xl px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
+                    "rounded-xl px-3 py-2 font-mono text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
                     isHome && activeSection === link.id && "bg-muted text-foreground"
                   )}
                 >

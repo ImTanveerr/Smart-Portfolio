@@ -15,7 +15,7 @@ export function TagPills({
         <Link
           key={tag.slug}
           href={`${basePath}?tag=${tag.slug}`}
-          className="rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+          className="rounded-full bg-muted px-3 py-1 font-mono text-xs text-muted-foreground hover:bg-accent hover:text-accent-foreground"
         >
           {tag.name}
         </Link>

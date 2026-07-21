@@ -45,7 +45,7 @@ export default async function HomePage() {
       <ProfileHero profile={profile} />
 
       {skills.length > 0 && (
-        <SectionBand>
+        <SectionBand tinted>
           <section id="skills" className="scroll-mt-24 space-y-6">
             <Reveal>
               <SectionHeading eyebrow="Toolbox" title="Skills" />
@@ -55,7 +55,7 @@ export default async function HomePage() {
         </SectionBand>
       )}
 
-      <SectionBand tinted>
+      <SectionBand>
         <section id="projects" className="scroll-mt-24 space-y-6">
           <Reveal>
             <SectionHeading
@@ -90,7 +90,7 @@ export default async function HomePage() {
         </section>
       </SectionBand>
 
-      <SectionBand>
+      <SectionBand tinted>
         <section id="blog" className="scroll-mt-24 space-y-6">
           <Reveal>
             <SectionHeading
@@ -125,7 +125,7 @@ export default async function HomePage() {
         </section>
       </SectionBand>
 
-      <SectionBand tinted>
+      <SectionBand last>
         <section id="about" className="scroll-mt-24 space-y-6">
           <Reveal>
             <SectionHeading eyebrow="Get to know me" title="About" />

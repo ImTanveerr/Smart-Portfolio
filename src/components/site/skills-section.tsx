@@ -34,7 +34,7 @@ export function SkillsSection({ skills }: { skills: Skill[] }) {
                 <Badge
                   key={skill.id}
                   variant="secondary"
-                  className="transition-transform hover:-translate-y-0.5 hover:bg-[color-mix(in_oklch,var(--secondary),var(--accent-a)_12%)]"
+                  className="font-mono transition-transform hover:-translate-y-0.5 hover:bg-[color-mix(in_oklch,var(--secondary),var(--accent-a)_12%)]"
                 >
                   {skill.name}
                 </Badge>

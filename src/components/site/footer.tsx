@@ -7,7 +7,7 @@ export function Footer({ profile }: { profile: Profile | null }) {
   const socialLinks = getSocialLinks(profile);
 
   return (
-    <footer className="relative mt-12 border-t border-border">
+    <footer className="relative border-t border-border">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--accent-a)]/50 to-transparent" />
       <Reveal className="mx-auto max-w-5xl px-6 py-12">
         <div className="flex flex-col items-center gap-8 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
